@@ -1,0 +1,38 @@
+{
+  "name": "easiermongo",
+  "version": "0.0.1",
+  "description": "Easily connect & use your mongo database",
+  "main": "./src/index.js",
+  "types": "./typings/index.d.ts",
+  "files": [
+    "src",
+    "typings"
+  ],
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grook8958/easiermongo.git"
+  },
+  "keywords": [
+    "MongoDB",
+    "mongoose",
+    "api",
+    "mongo",
+    "easy"
+  ],
+  "author": "grook8958",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/grook8958/easiermongo/issues"
+  },
+  "homepage": "https://github.com/grook8958/easiermongo#readme",
+  "dependencies": {
+    "mongoose": "^6.2.10"
+  }
+}
