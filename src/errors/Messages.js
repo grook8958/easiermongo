@@ -4,6 +4,7 @@ const { register } = require('./EasierMongoError');
 
 const Messages = {
   MONGO_CLIENT_INVALID_OPTION: (prop, must, an = false) => `The ${prop} option must be ${an ? 'an' : 'a'} ${must}`,
+  INVALID_TYPE: (prop, must, an = false) => `${prop} must be ${an ? 'an' : 'a'} ${must}`
   
 };
 

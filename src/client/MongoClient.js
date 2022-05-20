@@ -1,9 +1,11 @@
 const { EventEmitter } = require('node:events');
 const Mongoose = require('mongoose');
-const { TypeError, Error, RangeError } = require('../errors');
-const MongoError = require('../errors/MongoError');
+const { TypeError, RangeError } = require('../errors');
 const Options = require('../util/Options');
 const Utils = require('../util/Utils');
+const path = require('path');
+const Database = require('../database/Database');
+const MongoConnectionString = require('../util/MongoConnectionString');
 
 /**
  * The starting point of interacting with your MongoDB
@@ -18,6 +20,18 @@ class MongoClient extends EventEmitter {
         super();
 
         /**
+         * Options for a client.
+         * @typedef {Object} MongoClientOptions
+         * @property {number} [connectionTimeout=5000] The amout of time in milliseconds the request will wait before rejecting.
+         * @property {string|null} [uri=undefined] The database connection string.
+         * @property {string} [schemaFolderPath=undefined] The folder in which the schema should be stored.
+         * @property {boolean} [esm=false] Wether it shoulf user ESM import or CommonJS require.
+         * @property {boolean} [useFiles=true] Wether the schemas should be stored in individual files or it should be dynamically added every time to the Database.
+         * @property {Array[string]} [ignoredFiles=[]] The files to ignore when `useFiles` is set to `true`
+         * @property {boolean} [makeCache=true] Wether easiermongo should cache documents
+         */
+
+        /**
          * The options that were used to initialize this client.
          * @type {MongoClientOptions}
          */
@@ -25,26 +39,62 @@ class MongoClient extends EventEmitter {
 
         /**
          * The connection to the database.
-         * @type {Mongoose|null}
+         * @type {typeof Mongoose}
          */
         this._mongoose = null;
 
-        this._validatOptions()
+        /**
+         * The Database to which a connection was opened.
+         * @type {Database}
+         */
+        this.database = null;
+
+        //Validate the options
+        this._validatOptions();
+
+        console.log(path.resolve(this.options.schemaFolderPath))
+    }
+
+    /**
+     * The database to which a connection was opened.
+     * @type {Database}
+     */
+    get db() {
+        return this.database;
+    }
+
+    /**
+     * The connection URI
+     * @type {MongoConnectionString|string|null} 
+     */
+    get uri() {
+        return options.uri;
     }
 
     /**
      * Opens a new connnection to your database.
-     * @param {string|null} uri The URI connection string of your database
+     * @param {MongoConnectionString|string|null} uri The URI connection string of your database
      * @returns {}
      */
     async connect(uri = this.options.uri) {
+        if (uri instanceof MongoConnectionString) uri = uri.toString();
+        //Connect to the database
         try {
             this._mongoose = await Mongoose.connect(uri, {connectTimeoutMS: this.options.connectionTimeout, waitQueueTimeoutMS: this.options.connectionTimeout});
         } catch (error) {
-            const mongoError = new MongoError(error.message, error.reason);
-            MongoError.captureStackTrace(mongoError);
-            throw mongoError;
+            Utils.handleError(error);
         }
+        
+        //Create the database object
+        this.database = new Database(this);
+
+        this.emit('connected', this.database);
+
+        //Start handling handling events
+        this.handleEvents();
+
+        //Emit the 'ready' event
+        if (this.options.useFiles === false) this.emit('ready');
     }
 
     /**
@@ -53,13 +103,59 @@ class MongoClient extends EventEmitter {
      */
     async disconnect() {
         await this._mongoose.disconnect();
-        this._mongoose = null;
+        for (const fields in this) this[fields] = null;
+        return;
     }
 
+    /**
+     * Validates the options passed to the constructor
+     * @param {MongoClientOptions} options
+     * @private
+     */
     async _validatOptions(options = this.options) {
         if (typeof options.connectionTimeout !== 'undefined' && typeof options.connectionTimeout !== 'number') throw new TypeError('MONGO_CLIENT_INVALID_OPTION', 'connetionTimeout', 'number');
-        if (typeof options.uri !== 'undefined' && typeof options.uri !== 'string') throw new TypeError('MONGO_CLIENT_INVALID_OPTION', 'uri', 'string');
-    } 
+        if (typeof options.uri !== 'undefined' && (typeof options.uri !== 'string' || options.uri instanceof MongoConnectionString)) throw new TypeError('MONGO_CLIENT_INVALID_OPTION', 'uri', 'string or a MongoConnectionString');
+        if (typeof options.makeCache != 'boolean') throw new TypeError('MONGO_CLIENT_INVALID_OPTIONS', 'makeCache', 'boolean');
+        if (typeof options.esm != 'boolean') throw new TypeError('MONGO_CLIENT_INVALID_OPTIONS', 'esm', 'boolean');
+        if (Array.isArray(options.ignoredFiles) && !Utils.checkArray(options.ignoredFiles, 'string')) throw new TypeError('MONGO_MONGO_CLIENT_INVALID_OPTIONS', 'ignoredFiles', 'Array of strings', true);
+        if (typeof options.schemaFolderPath != 'string') throw new TypeError('MONGO_CLIENT_INVALID_OPTIONS', 'schemaFolderPath', 'string');
+        if (typeof options.useFiles != 'boolean') throw new TypeError('MONGO_CLIENT_INVALID_OPTIONS', 'useFiles', 'boolean');
+    }
+
+    /**
+     * Handles the events fired from Mongoose
+     * @return {void}
+     * @private
+     */
+    handleEvents() {
+        this._mongoose.connection.on("error", err => {
+            this.emit('error', err);
+        });
+
+        this._mongoose.connection.on('disconnected', () => {
+            this.emit('disconnected');
+        });
+
+        this._mongoose.connection.on('disconnecting', () => {
+            this.emit('disconnecting');
+        });
+
+        this._mongoose.connection.on('connected', () => {
+            this.emit('connected');
+        });
+
+        this._mongoose.connection.on('connecting', () => {
+            this.emit('connecting');
+        });
+
+        this._mongoose.connection.on('reconnected', () => {
+            this.emit('reconnected');
+        });
+
+        this._mongoose.connection.on('close', () => {
+            this.emit('close');
+        });
+    }
 }
 
 module.exports = MongoClient;

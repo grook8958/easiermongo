@@ -5,14 +5,11 @@ class MongoError extends Error {
         super();
         this.name = 'MongoError';
 
-        let msg
-        if (message.split(' ')[0] === "getaddrinfo" && message.split(' ')[1] === "ENOTFOUND") {
-            msg = `Uknown Host ${message.split(' ')[2]}`
-        }
-
-        this.message = msg ?? message;
+        this.message = message;
 
         this.reason = reason
+        
+        if (Error.captureStackTrace) Error.captureStackTrace(this, MongoError);
     }
 }
 
