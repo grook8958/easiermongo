@@ -65,7 +65,7 @@ class SchemaManager {
             if (!obj.schema instanceof MongoSchema) throw new TypeError("INVALID_TYPE", "schema", "MongoSchema");
 
             let key = obj.name;
-            const model = obj.schema.model(key);
+            const model = obj.schema.model(key, this.database.client.options.makeCache);
             this[key] = model;
             this.collection.set(key, {name: key, model: model});
         }
