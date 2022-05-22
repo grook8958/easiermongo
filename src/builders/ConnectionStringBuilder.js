@@ -1,7 +1,7 @@
 /**
  * The object representation of a MongoDB connection string.
  */
-class MongoConnectionString {
+class ConnectionStringBuilder {
     /**
      * The object representation of a MongoDB connection string.
      * @param {MongoConnectionStringData} data The connection string data.
@@ -54,7 +54,7 @@ class MongoConnectionString {
     /**
      * Set the host name
      * @param {string} host The host name
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     setHost(host) {
         this.host = host;
@@ -64,7 +64,7 @@ class MongoConnectionString {
     /**
      * Set the port number
      * @param {number} port The port number
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     setPort(port) {
         this.port = port;
@@ -74,7 +74,7 @@ class MongoConnectionString {
     /**
      * Set the name of the database
      * @param {string} dbName The name of the database
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     setDbName(dbName) {
         this.dbName = dbName;
@@ -84,7 +84,7 @@ class MongoConnectionString {
     /**
      * Set the connection username
      * @param {string} username The connection username
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     setUsername(username) {
         this.username = username;
@@ -94,7 +94,7 @@ class MongoConnectionString {
     /**
      * Set the connection password
      * @param {string} password The connection password
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     setPassword(password) {
         this.password = password;
@@ -104,7 +104,7 @@ class MongoConnectionString {
     /**
      * Set wether it should use `mongodb+srv://`.
      * @param {boolean} srv Wether it should use `mongodb+srv://`.
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     useSRV(srv) {
         this.srv = srv;
@@ -114,7 +114,7 @@ class MongoConnectionString {
     /**
      * The source of the authentication
      * @param {string} source The source of the authentication
-     * @returns {MongoConnectionString}
+     * @returns {ConnectionStringBuilder}
      */
     setAuthenticationSource(source) {
         this.authenticationSource = source;
@@ -147,4 +147,4 @@ class MongoConnectionString {
     }
 }   
 
-module.exports = MongoConnectionString;
+module.exports = ConnectionStringBuilder;
