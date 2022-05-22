@@ -26,4 +26,11 @@ module.exports = () => {
     console.log(string.toString())
     //client.connect("mongodb://grook8958:Cle%3Bent2007@192.168.1.21:27017/icy?authSource=admin");
 
-}                       
+}         
+
+//Creating a schema
+const MongoSchema = require('../src/database/MongoSchema');
+
+const schm = new MongoSchema({
+    field1: {type: String, required: true}
+});

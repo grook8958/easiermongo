@@ -1,4 +1,5 @@
-const { Schema, SchemaDefinition, SchemaOptions }= require('mongoose');
+const { Schema, SchemaDefinition, SchemaOptions } = require('mongoose');
+const mongoose = require('mongoose');
 const MongoModel = require('./MongoModel');
 
 /**
