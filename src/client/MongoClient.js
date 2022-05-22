@@ -5,7 +5,7 @@ const Options = require('../util/Options');
 const Utils = require('../util/Utils');
 const path = require('path');
 const Database = require('../database/Database');
-const MongoConnectionString = require('../util/MongoConnectionString');
+const MongoConnectionString = require('../builders/ConnectionStringBuilder');
 
 /**
  * The starting point of interacting with your MongoDB
