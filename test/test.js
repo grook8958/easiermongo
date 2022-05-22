@@ -2,7 +2,7 @@ module.exports = () => {
     const path = require('path');
 
     const MongoClient = require('../src/client/MongoClient');
-    const stringConstructor = require('../src/util/MongoConnectionString')
+    const stringConstructor = require('../src/builders/ConnectionStringBuilder')
 
     const client = new MongoClient({
         schemaFolderPath: path.join(__dirname, 'schemas'),
@@ -27,10 +27,3 @@ module.exports = () => {
     //client.connect("mongodb://grook8958:Cle%3Bent2007@192.168.1.21:27017/icy?authSource=admin");
 
 }         
-
-//Creating a schema
-const MongoSchema = require('../src/database/MongoSchema');
-
-const schm = new MongoSchema({
-    field1: {type: String, required: true}
-});
