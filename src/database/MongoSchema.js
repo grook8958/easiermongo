@@ -9,7 +9,7 @@ class MongoSchema extends Schema {
     /**
      * Represents a mongoose Schema
      * @param {SchemaDefinition} obj 
-     * @param {SchemaOptions} options 
+     * @param {SchemaOptions} options The options of this schema
      */
     constructor(obj, options) {
         super(obj, options);
