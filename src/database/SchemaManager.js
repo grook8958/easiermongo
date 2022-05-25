@@ -3,6 +3,7 @@ const MongoSchema = require('./MongoSchema');
 const { TypeError } = require('../errors');
 const { Collection } = require('@discordjs/collection');
 const MongoModel = require('./MongoModel');
+const SchemaBuilder = require('../builders/SchemaBuilder');
 
 /**
  * The manager of schemas
@@ -61,7 +62,8 @@ class SchemaManager {
         } else {
             objs = schemaObjects;
         }
-        for (const obj of objs) {
+        for (let obj of objs) {
+            if (obj.schema instanceof SchemaBuilder) obj = obj.toSchema();
             if (!obj.schema instanceof MongoSchema) throw new TypeError("INVALID_TYPE", "schema", "MongoSchema");
 
             let key = obj.name;
