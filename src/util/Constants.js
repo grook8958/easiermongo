@@ -3,29 +3,29 @@ const mongoose = require('mongoose');
 
 /**
  * The resolvable field types
- * * string
- * * number
- * * date
- * * buffer
- * * boolean
- * * mixed
- * * objectId
- * * array
- * * decimal128
- * * map
- * @typedef {"string"|"number"|"date"|"buffer"|"boolean"|"mixed"|"objectId"|"array"|"decimal128"|"objectId"|"map"|string} SchemaFieldTypeResolvable
+ * * STRING
+ * * NUMBER
+ * * DATE
+ * * BUFFER
+ * * BOOLEAN
+ * * MIXED
+ * * OBJECTID
+ * * ARRAY
+ * * DECIMAL128
+ * * MAP
+ * @typedef {"STRING"|"NUMBER"|"DATE"|"BUFFER"|"BOOLEAN"|"MIXED"|"OBJECTID"|"ARRAY"|"DECIMAL128|"MAP"|string} SchemaFieldTypeResolvable
  */
 exports.SchemaFieldTypes = {
-    "string": String,
-    "number": Number,
-    "date": Date,
-    "buffer": Buffer,
-    "boolean": Boolean,
-    "mixed": {},
-    "objectId": new mongoose.Types.ObjectId(),
-    "array": [],
-    "decimal128": SchemaTypes.Decimal128,
-    "map": Map,  
+    "STRING": String,
+    "NUMBER": Number,
+    "DATE": Date,
+    "BUFFER": Buffer,
+    "BOOLEAN": Boolean,
+    "MIXED": {},
+    "OBJECTID": new mongoose.Types.ObjectId(),
+    "ARRAY": [],
+    "DECIMAL128": SchemaTypes.Decimal128,
+    "MAP": Map,  
 }
 
 /**
