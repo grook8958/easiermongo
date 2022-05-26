@@ -114,7 +114,7 @@ class MongoClient extends EventEmitter {
      */
     async _validatOptions(options = this.options) {
         if (typeof options.connectionTimeout !== 'undefined' && typeof options.connectionTimeout !== 'number') throw new TypeError('MONGO_CLIENT_INVALID_OPTION', 'connetionTimeout', 'number');
-        if (typeof options.uri !== 'undefined' && (typeof options.uri !== 'string' || options.uri instanceof MongoConnectionString)) throw new TypeError('MONGO_CLIENT_INVALID_OPTION', 'uri', 'string or a MongoConnectionString');
+        if (typeof options.uri !== 'undefined' && (typeof options.uri !== 'string' || !options.uri instanceof MongoConnectionString)) throw new TypeError('MONGO_CLIENT_INVALID_OPTION', 'uri', 'string or a MongoConnectionString');
         if (typeof options.makeCache != 'boolean') throw new TypeError('MONGO_CLIENT_INVALID_OPTIONS', 'makeCache', 'boolean');
         if (typeof options.esm != 'boolean') throw new TypeError('MONGO_CLIENT_INVALID_OPTIONS', 'esm', 'boolean');
         if (Array.isArray(options.ignoredFiles) && !Utils.checkArray(options.ignoredFiles, 'string')) throw new TypeError('MONGO_MONGO_CLIENT_INVALID_OPTIONS', 'ignoredFiles', 'Array of strings', true);
