@@ -2,3 +2,5 @@
 test
 .npmignore
 package-lock.json
+.vscode
+docs
