@@ -57,10 +57,12 @@ class SchemaBuilder {
     toJSON() {
         const obj = {};
         for (const field of this.fields) {
-            const json = field.toJSON();
-            const name = json.name;
-            delete json.name;
-            obj[name] = json;
+            if (field instanceof SchemaFieldBuilder) {
+                const json = field.toJSON();
+                const name = json.name;
+                delete json.name;
+                obj[name] = json;
+            }
         } 
 
         return {
