@@ -1,7 +1,7 @@
 const MongoClient = require('../client/MongoClient');
 const SchemaFileManager = require('./SchemaFileManager');
 const SchemaManager = require('./SchemaManager');
-const { Collection } = require('mongoose');
+const { Collection, Document } = require('mongoose');
 
 /**
  * Represents a Database
@@ -28,7 +28,7 @@ class Database {
          * The schema file manager
          * @type {SchemaFileManager}
          */
-        this._schemaFiles = new SchemaFileManager(this);
+        this._schemaFileManager = new SchemaFileManager(this);
 
         /**
          * The schema manager
@@ -56,12 +56,12 @@ class Database {
         }
 
         //Fetch the files.
-        this._schemaFiles.fetchFiles();
+        this._schemaFileManager.fetchFiles();
     }
 
     /**
      * Returns all the collections of the database.
-     * @returns {Promise<Collection[]>}
+     * @returns {Promise<Collection<Document>[]>}
      */
     async getCollections() {
         return await this.client._mongoose.connection.db.collections()
@@ -70,7 +70,7 @@ class Database {
     /**
      * Return a collection of the database.
      * @param {string} name The name of the collection.
-     * @returns {Collection}
+     * @returns {Collection<Document>}
      */
     getCollection(name) {
         return this.client._mongoose.connection.db.collection(name);
