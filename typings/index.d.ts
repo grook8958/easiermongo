@@ -6,6 +6,8 @@ import mongoose, {
     SchemaDefinition,
     SchemaOptions,
     Model,
+    SchemaTypes,
+    Mixed,
 } from 'mongoose';
 
 export class MongoClient extends EventEmitter {
@@ -99,10 +101,60 @@ export class SchemaFileManager {
     private importCommonJS(options: MongoClientOptions): Promise<Array<any>>;
 }
 
+export class SchemaBuilder {
+    public constructor(data: SchemaBuilderData);
+    public fields: SchemaFieldBuilder[];
+    public options: SchemaOptions;
+    public addField(input: (builder: SchemaFieldBuilder) => SchemaFieldBuilder): SchemaBuilder;
+    public setOptions(options: SchemaOptions): SchemaBuilder;
+    public toJSON(): any;
+    public toSchema(): MongoSchema;
+}
+
+export class SchemaFieldBuilder {
+    public constructor(data: SchemaFieldData);
+    public name: string;
+    public type: SchemaFieldType;
+    public required: boolean;
+    public default: any;
+    public setName(name: string): SchemaFieldBuilder;
+    public setType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldBuilder;
+    public setRequired(required: boolean): SchemaFieldBuilder;
+    public setDefault(value: any): SchemaFieldBuilder;
+    public toJSON(): any;
+    private resolveFieldType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldType;
+}
+
 //=============================================================================
 //                      [Interfaces and types below]
 //=============================================================================
 export type Awaitable<T> = T | PromiseLike<T>;
+
+export interface SchemaBuilderData {
+    fields: SchemaFieldBuilder[];
+    options: SchemaOptions;
+}
+
+export interface SchemaFieldBuilderData {
+    name: string;
+    type: SchemaFieldType;
+    required: boolean;
+    default: any;
+}
+
+export type SchemaFieldType = typeof SchemaTypes;
+
+export type SchemaFieldTypeResolvable = 
+    | "STRING"
+    | "NUMBER"
+    | "DATE"
+    | "BUFFER"
+    | "BOOLEAN"
+    | "MIXED"
+    | "OBJECTID"
+    | "ARRAY"
+    | "DECIMAL128"
+    | "MAP"
 
 export interface MongoConnectionDetails {
     host: string;
