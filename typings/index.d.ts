@@ -7,8 +7,8 @@ import mongoose, {
     SchemaOptions,
     Model,
     SchemaTypes,
-    Mixed,
 } from 'mongoose';
+import MongoError from '../src/errors/MongoError';
 
 export class MongoClient extends EventEmitter {
     public constructor(options: MongoClientOptions);
@@ -21,20 +21,20 @@ export class MongoClient extends EventEmitter {
     public async disconnect(): Promise<void>;
     private async _validateOptions(options: MongoClientOptions): Promise<void>;
     private handleEvents(): void;
-    public on<K extends keyof MongoClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
+    public on<K extends keyof MongoClientEvents>(event: K, listener: (...args: MongoClientEvents[K]) => Awaitable<void>): this;
     public on<S extends string | symbol>(
       event: Exclude<S, keyof MongoClientEvents>,
       listener: (...args: any[]) => Awaitable<void>,
     ): this;
-    public once<K extends keyof MongoClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
+    public once<K extends keyof MongoClientEvents>(event: K, listener: (...args: MongoClientEvents[K]) => Awaitable<void>): this;
     public once<S extends string | symbol>(
       event: Exclude<S, keyof MongoClientEvents>,
       listener: (...args: any[]) => Awaitable<void>,
     ): this;
 }
 
-export class MongoConnectionString {
-    public constructor(data: MongoConnectionStringData);
+export class ConnectionStringBuilder {
+    public constructor(data: ConnectionStringBuilderData);
     public host: string | null;
     public port: number | null;
     public dbName: string | null;
@@ -43,7 +43,7 @@ export class MongoConnectionString {
     public srv: boolean | null;
     public authenticationSource: string | null;
     public setHost(host: string): MongoConnectionString;
-    public setPort(port: numbrt): MongoConnectionString;
+    public setPort(port: number): MongoConnectionString;
     public setDbName(dbName: string): MongoConnectionString;
     public setUsername(username: string): MongoConnectionString;
     public setPassword(password: string): MongoConnectionString;
@@ -57,11 +57,11 @@ export class Database {
     public constructor(client: MongoClient);
     public client: MongoClient;
     public name: string;
-    public _schemaFiles: SchemaFileManager;
+    public _schemaFileManager: SchemaFileManager;
     public schemas: SchemaManager;
     public connectionDetails: MongoConnectionDetails;
-    public async getCollections(): Promise<mongoose.Collection<Document[]>>;
-    public getCollection(name: string): Collection<Document>;
+    public async getCollections(): Promise<mongoose.Collection<Document>[]>;
+    public getCollection(name: string): mongoose.Collection<Document>;
     public disconnect(): Promise<void>;
 }
 
@@ -79,8 +79,8 @@ export class MongoSchema extends Schema {
 }
 
 export class MongoModel {
-    public constructor(model: Model, makeCache: boolean);
-    public _model: Model;
+    public constructor(model: Model<any>, makeCache: boolean);
+    public _model: Model<any>;
     public makeCache: boolean;
     public cache: Collection<string,any>;
     public async get(id: string): Promise<any>;
@@ -112,7 +112,7 @@ export class SchemaBuilder {
 }
 
 export class SchemaFieldBuilder {
-    public constructor(data: SchemaFieldData);
+    public constructor(data: SchemaFieldBuilderData);
     public name: string;
     public type: SchemaFieldType;
     public required: boolean;
@@ -125,6 +125,16 @@ export class SchemaFieldBuilder {
     private resolveFieldType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldType;
 }
 
+export class Util extends null {
+    public static mergeDefault(def: any, given: any): any;
+    public static handleError(error: Error): MongoError;
+    public static checkArray(array: Array<any>, type: string): boolean;
+}
+
+export class Options extends null {
+    public static createDefault(): MongoClientOptions;
+}
+
 //=============================================================================
 //                      [Interfaces and types below]
 //=============================================================================
@@ -133,6 +143,20 @@ export type Awaitable<T> = T | PromiseLike<T>;
 export interface SchemaBuilderData {
     fields: SchemaFieldBuilder[];
     options: SchemaOptions;
+}
+
+export enum SchemaFieldTypes {
+    STRING = SchemaTypes.String,
+    NUMNER = SchemaTypes.Number,
+    DATE = SchemaTypes.Date,
+    BUFFER = SchemaTypes.Buffer,
+    BOOLEAN = SchemaTypes.Boolean,
+    MIXED = SchemaTypes.Mixed,
+    OBJECTID = SchemaTypes.ObjectId,
+    ARRAY = SchemaTypes.Array,
+    DECIMAL = SchemaTypes.Decimal128,
+    MAP = SchemaTypes.Map,
+
 }
 
 export interface SchemaFieldBuilderData {
@@ -173,9 +197,9 @@ export interface SchemaObject {
     schema: MongoSchema;
 }
 
-export type MongoEditOptions = QueryOptions;
+export type ModelEditOptions = QueryOptions;
 
-export interface MongoConnectionStringData {
+export interface ConnectionStringBuilderData {
     host?: string;
     port?: number;
     dbName?: string;
@@ -189,10 +213,10 @@ export interface MongoClientOptions {
     connetionTimeout?: 5000 | number;
     uri?: string;
     schemaFolderPath?: string;
-    esm?: boolean;
-    useFiles?: boolean;
+    esm?: false | boolean;
+    useFiles?: true | boolean;
     ignoredFiles?: Array<string>;
-    makeCache?: boolean;
+    makeCache?: true | boolean;
 }
 
 export interface MongoClientEvents {

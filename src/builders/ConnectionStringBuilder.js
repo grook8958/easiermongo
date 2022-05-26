@@ -3,8 +3,19 @@
  */
 class ConnectionStringBuilder {
     /**
+     * @typedef {Object} ConnectionStringBuilderData
+     * @property {string} host The host adress
+     * @property {number} port The port number
+     * @property {string} dbName The name of the database
+     * @property {string} username The connection username
+     * @property {string} password The connection password
+     * @property {boolean} srv Wether it should use `mongodb+srv://`. 
+     * * Set to `false` by default
+     * @property {string} authenticationSource The source of the authentication
+     */
+    /**
      * The object representation of a MongoDB connection string.
-     * @param {MongoConnectionStringData} data The connection string data.
+     * @param {ConnectionStringBuilderData} data The connection string data.
      */
     constructor(data = {}) {
         /**
