@@ -5,6 +5,5 @@ const { SchemaFieldTypes } = require('../src/util/Constants');
 
 const builder = new SchemaBuilder();
 
-builder.addField(field => field.setName('_id').setRequired(true).setType("string"))
-console.log(builder.toJSON())
+builder.addField(field => field.setName('_id').setRequired(true).setType(SchemaFieldTypes.OBJECTID))
 console.log(builder.toSchema())
