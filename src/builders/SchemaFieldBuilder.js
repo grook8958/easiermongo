@@ -8,7 +8,7 @@ class SchemaFieldBuilder {
      * @typedef {typeof SchemaTypes} SchemaFieldType
      */   
     /**
-     * @typedef {Object} SchemaFieldData
+     * @typedef {Object} SchemaFieldBuilderData
      * @property {string} name The name of this field
      * @property {SchemaFieldType} type The type of this field
      * @property {boolean} required Wether this field is required
@@ -16,7 +16,7 @@ class SchemaFieldBuilder {
      */
     /**
      * A builder to create a new field for a Schema
-     * @param {SchemaFieldData} data 
+     * @param {SchemaFieldBuilderData} data 
      */
     constructor(data = {}) {
         /**
