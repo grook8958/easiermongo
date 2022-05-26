@@ -16,16 +16,16 @@ const mongoose = require('mongoose');
  * @typedef {"STRING"|"NUMBER"|"DATE"|"BUFFER"|"BOOLEAN"|"MIXED"|"OBJECTID"|"ARRAY"|"DECIMAL128|"MAP"|string} SchemaFieldTypeResolvable
  */
 exports.SchemaFieldTypes = {
-    "STRING": String,
-    "NUMBER": Number,
-    "DATE": Date,
-    "BUFFER": Buffer,
-    "BOOLEAN": Boolean,
-    "MIXED": {},
-    "OBJECTID": new mongoose.Types.ObjectId(),
-    "ARRAY": [],
+    "STRING": SchemaTypes.String,
+    "NUMBER": SchemaTypes.Number,
+    "DATE": SchemaTypes.Date,
+    "BUFFER": SchemaTypes.Buffer,
+    "BOOLEAN": SchemaTypes.Boolean,
+    "MIXED": SchemaTypes.Mixed,
+    "OBJECTID": SchemaTypes.ObjectId,
+    "ARRAY": SchemaTypes.Array,
     "DECIMAL128": SchemaTypes.Decimal128,
-    "MAP": Map,  
+    "MAP": SchemaTypes.Map,  
 }
 
 /**
