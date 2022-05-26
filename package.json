@@ -34,6 +34,6 @@
   "homepage": "https://github.com/grook8958/easiermongo#readme",
   "dependencies": {
     "@discordjs/collection": "^0.6.0",
-    "mongoose": "^6.3.2"
+    "mongoose": "^6.3.4"
   }
 }
