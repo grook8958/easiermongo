@@ -17,7 +17,8 @@ export class MongoClient extends EventEmitter {
     public database: Database;
     public get db(): Database;
     public get uri(): string;
-    public async connect(uri?: MongoConnectionString|string): Promise<void>;
+    public async connect(uri?: MongoConnectionString|string): Promise<Database>;
+    public async connect(): Promise<Database>;
     public async disconnect(): Promise<void>;
     private async _validateOptions(options: MongoClientOptions): Promise<void>;
     private handleEvents(): void;
