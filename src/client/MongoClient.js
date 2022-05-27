@@ -1,11 +1,11 @@
 const { EventEmitter } = require('node:events');
 const Mongoose = require('mongoose');
-const { TypeError, RangeError } = require('../errors');
+const { TypeError } = require('../errors');
 const Options = require('../util/Options');
 const Utils = require('../util/Utils');
 const path = require('path');
 const Database = require('../database/Database');
-const MongoConnectionString = require('../builders/ConnectionStringBuilder');
+const ConnectionStringBuilder = require('../builders/ConnectionStringBuilder');
 
 /**
  * The starting point of interacting with your MongoDB
@@ -13,8 +13,8 @@ const MongoConnectionString = require('../builders/ConnectionStringBuilder');
  */
 class MongoClient extends EventEmitter {
     /**
-     * 
-     * @param {MongoClientOptions} options 
+     * The starting point of interacting with your MongoDB
+     * @param {MongoClientOptions} options The options of your client
      */
     constructor(options) {
         super();
@@ -38,7 +38,7 @@ class MongoClient extends EventEmitter {
         this.options = Utils.mergeDefault(Options.createDefault(), options);;
 
         /**
-         * The connection to the database.
+         * The native mongoose connection to the database.
          * @type {typeof Mongoose}
          */
         this._mongoose = null;
@@ -65,7 +65,7 @@ class MongoClient extends EventEmitter {
 
     /**
      * The connection URI
-     * @type {MongoConnectionString|string|null} 
+     * @type {ConnectionStringBuilder|string|null} 
      */
     get uri() {
         return options.uri;
@@ -74,7 +74,7 @@ class MongoClient extends EventEmitter {
     /**
      * Opens a new connnection to your database.
      * @param {MongoConnectionString|string|null} uri The URI connection string of your database
-     * @returns {}
+     * @returns {Database}
      */
     async connect(uri = this.options.uri) {
         if (uri instanceof MongoConnectionString) uri = uri.toString();
@@ -95,6 +95,8 @@ class MongoClient extends EventEmitter {
 
         //Emit the 'ready' event
         if (this.options.useFiles === false) this.emit('ready');
+
+        return this.database;
     }
 
     /**
