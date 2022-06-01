@@ -1,4 +1,5 @@
-# MongoClient
+# MongoClient 
+### *extends [EventEmitter](https://nodejs.org/dist/latest/docs/api/events.html#events_class_eventemitter)*
 ## Constructor
 ```js
 new Easiermongo.MongoClient(options)
@@ -19,8 +20,6 @@ new Easiermongo.MongoClient(options)
 ### Methods
 - [connect](#.connect())
 - [disconnect](#.disconnect())
-- [once](#.once())
-- [on](#.on())
 ---
 ## Properties
 <a name=".db"><a/>
@@ -63,4 +62,8 @@ Opens a new connnection to your database.
 **Returns:** [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[Database](./Database.md)>
 
 ---
+<a name=".disconnect()"><a>
+### [**.disconnect()**](#.disconnect())
+Close the connection from your database.
+<br>**Returns:** [void](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined)<br/>
 
