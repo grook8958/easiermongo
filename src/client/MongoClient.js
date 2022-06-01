@@ -100,7 +100,7 @@ class MongoClient extends EventEmitter {
     }
 
     /**
-     * Disconnects from your database.
+     * Close the connection from your database.
      * @return {void}
      */
     async disconnect() {
