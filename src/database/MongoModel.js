@@ -38,6 +38,7 @@ class MongoModel {
      * @returns {Promise<any>}
      */
     async get(id) {
+        if (typeof id != 'string') throw new TypeError("INVALID_TYPE", "id", "string");
         const doc = await this._model.findById(id);
         if (doc && this.makeCache) this.cache.set(doc._id, doc);
         return doc;
@@ -50,6 +51,7 @@ class MongoModel {
      * @returns {Promise<any>}
      */
     async find(query) {
+        if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
         const doc = await this._model.findOne(query);
         if (doc && this.makeCache) this.cache.set(doc._id, doc);
         return doc;
@@ -62,6 +64,7 @@ class MongoModel {
      * @returns {Promise<any[]>}
      */
     async findAll(query) {
+        if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
         const docs = await this._model.find(query);
         if (docs.length > 0 && this.makeCache) docs.forEach(doc => this.cache.set(doc._id, doc));
         return docs;
@@ -80,6 +83,9 @@ class MongoModel {
      * @returns {Promise<any>}
      */
     async edit(id, change, options = {}) {
+        if (typeof id != 'string') throw new TypeError("INVALID_TYPE", "id", "string");
+        if (typeof change != 'object') throw new TypeError("INVALID_TYPE", "change", "object");
+        if (typeof options != 'object') throw new TypeError("INVALID_TYPE", "options", "object");
         const doc = await this._model.findByIdAndUpdate(id, change, options);
         if (doc && options.new === true) this.cache.set(doc._id, doc);
         return doc;
@@ -93,6 +99,9 @@ class MongoModel {
      * @returns {Promise<any>}
      */
     async findAndEdit(query, change, options = {}) {
+        if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
+        if (typeof change != 'object') throw new TypeError("INVALID_TYPE", "change", "object");
+        if (typeof options != 'object') throw new TypeError("INVALID_TYPE", "options", "object");
         const doc = await this._model.findOneAndUpdate(query, change, options);
         if (doc && options.new === true) this.cache.set(doc._id, doc);
         return doc;
@@ -106,6 +115,9 @@ class MongoModel {
      * @returns {Promise<any[]>}
      */
     async editMany(query, change, options = {}) {
+        if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
+        if (typeof change != 'object') throw new TypeError("INVALID_TYPE", "change", "object");
+        if (typeof options != 'object') throw new TypeError("INVALID_TYPE", "options", "object");
         const docs = await this._model.updateMany(query, change, options);
         if (docs.length > 0 && options.new === true) docs.forEach(doc => this.cache.set(doc._id, doc));
         return docs;

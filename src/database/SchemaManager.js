@@ -63,6 +63,7 @@ class SchemaManager {
             objs = schemaObjects;
         }
         for (let obj of objs) {
+            if (typeof obj.name != 'string') throw new TypeError("INVALID_TYPE", "name", "string");
             if (obj.schema instanceof SchemaBuilder) obj.schema = obj.schema.toSchema();
             if (!obj.schema instanceof MongoSchema) throw new TypeError("INVALID_TYPE", "schema", "MongoSchema");
 

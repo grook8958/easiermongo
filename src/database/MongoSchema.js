@@ -22,6 +22,8 @@ class MongoSchema extends Schema {
      * @public
      */
     model(name, makeCache = true) {
+        if (typeof name != 'string') throw new TypeError("INVALID_TYPE", "name", "string");
+        if (typeof makeCache != 'boolean') throw new TypeError("INVALID_TYPE", "makeCache", "boolean");
         return new MongoModel(mongoose.model(name, this), makeCache);
     }
 }

@@ -77,6 +77,7 @@ class MongoClient extends EventEmitter {
      * @returns {Database}
      */
     async connect(uri = this.options.uri) {
+        if (!uri instanceof ConnectionStringBuilder && typeof uri != 'string') throw new TypeError('INVALID_TYPE', 'uri', 'string or a MongoConnectionString');
         if (uri instanceof ConnectionStringBuilder) uri = uri.toString();
         //Connect to the database
         try {
