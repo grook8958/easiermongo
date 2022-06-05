@@ -30,7 +30,7 @@ class SchemaManager {
     /**
      * Adds a schema to the manager.
      * @param {string} name The name of the schema.
-     * @param {MongoSchema} schema The schema to add to the manager.
+     * @param {MongoSchema|SchemaBuilder} schema The schema to add to the manager.
      * @return {SchemaManager}
      */
     addSchema(name, schema) {
@@ -41,7 +41,7 @@ class SchemaManager {
     /**
      * @typedef {Object} SchemaObject
      * @property {string} name The name of the schema.
-     * @property {MongoSchema} schema The Schema.
+     * @property {MongoSchema|SchemaBuilder} schema The Schema.
      */
 
     /**
@@ -63,7 +63,7 @@ class SchemaManager {
             objs = schemaObjects;
         }
         for (let obj of objs) {
-            if (obj.schema instanceof SchemaBuilder) obj = obj.toSchema();
+            if (obj.schema instanceof SchemaBuilder) obj.schema = obj.schema.toSchema();
             if (!obj.schema instanceof MongoSchema) throw new TypeError("INVALID_TYPE", "schema", "MongoSchema");
 
             let key = obj.name;
