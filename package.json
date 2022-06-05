@@ -1,6 +1,6 @@
 {
   "name": "easiermongo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Easily connect & use your mongo database",
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
