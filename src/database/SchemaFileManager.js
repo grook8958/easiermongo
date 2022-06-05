@@ -77,7 +77,8 @@ class SchemaFileManager {
         const files = fs.readdirSync(options.schemaFolderPath).filter(file => (file.endsWith('.js')) && !options.ignoredFiles.includes(file));
 
         for (const fileName of files) {
-            require(`${options.schemaFolderPath}/${fileName}`).then((file) => schemaFiles.push({schema: file, name: fileName.replace(/\.(.*)/gm, '')}));
+            const file = require(`${options.schemaFolderPath}/${fileName}`)
+            schemaFiles.push({schema: file, name: fileName.replace(/\.(.*)/gm, '')})
         }
         return schemaFiles;
     }
