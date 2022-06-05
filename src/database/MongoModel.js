@@ -39,7 +39,7 @@ class MongoModel {
      */
     async get(id) {
         const doc = await this._model.findById(id);
-        if (doc && makeCache) this.cache.set(doc._id, doc);
+        if (doc && this.makeCache) this.cache.set(doc._id, doc);
         return doc;
     }
 
@@ -51,7 +51,7 @@ class MongoModel {
      */
     async find(query) {
         const doc = await this._model.findOne(query);
-        if (doc && makeCache) this.cache.set(doc._id, doc);
+        if (doc && this.makeCache) this.cache.set(doc._id, doc);
         return doc;
     }
 
@@ -63,7 +63,7 @@ class MongoModel {
      */
     async findAll(query) {
         const docs = await this._model.find(query);
-        if (docs.length > 0 && makeCache) docs.forEach(doc => this.cache.set(doc._id, doc));
+        if (docs.length > 0 && this.makeCache) docs.forEach(doc => this.cache.set(doc._id, doc));
         return docs;
     }
 
