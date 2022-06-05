@@ -73,11 +73,11 @@ class MongoClient extends EventEmitter {
 
     /**
      * Opens a new connnection to your database.
-     * @param {MongoConnectionString|string|null} uri The URI connection string of your database
+     * @param {ConnectionStringBuilder|string|null} uri The URI connection string of your database
      * @returns {Database}
      */
     async connect(uri = this.options.uri) {
-        if (uri instanceof MongoConnectionString) uri = uri.toString();
+        if (uri instanceof ConnectionStringBuilder) uri = uri.toString();
         //Connect to the database
         try {
             this._mongoose = await Mongoose.connect(uri, {connectTimeoutMS: this.options.connectionTimeout, waitQueueTimeoutMS: this.options.connectionTimeout});
