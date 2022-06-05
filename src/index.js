@@ -1,20 +1,20 @@
-module.exports = {
-    //Client
-    MongoClient: require('./client/MongoClient'),
-    //Database
-    Database: require('./database/Database'),
-    MongoModel: require('./database/MongoModel'),
-    MongoSchema: require('./database/MongoSchema'),
-    SchemaFileManager: require('./database/SchemaFileManager'),
-    SchemaManager: require('./database/SchemaManager'),
-    //Builders
-    ConnectionStringBuilder: require('./builders/ConnectionStringBuilder'),
-    SchemaBuilder: require('./builders/SchemaBuilder'),
-    SchemaFieldBuilder: require('./builders/SchemaFieldBuilder'),
-    //Util
-    Constants: require('./util/Constants'),
-    Options: require('./util/Options'),
-    Utils: require('./util/Utils'),
-    //Error
-    MongoError: require('./errors/MongoError')
-}
+'use-strict';
+
+//Client
+exports.MongoClient = require('./client/MongoClient');
+//Database
+exports.Database = require('./database/Database');
+exports.MongoModel = require('./database/MongoModel');
+exports.MongoSchema = require('./database/MongoSchema');
+exports.SchemaFileManager = require('./database/SchemaFileManager');
+exports.SchemaManager = require('./database/SchemaManager');
+//Builders
+exports.ConnectionStringBuilder = require('./builders/ConnectionStringBuilder');
+exports.SchemaBuilder = require('./builders/SchemaBuilder');
+exports.SchemaFieldBuilder = require('./builders/SchemaFieldBuilder');
+//Util
+exports.Constants = require('./util/Constants');
+exports.Options = require('./util/Options');
+exports.Utils = require('./util/Utils');
+//Error
+exports.MongoError = require('./errors/MongoError');
