@@ -31,7 +31,7 @@
   "bugs": {
     "url": "https://github.com/grook8958/easiermongo/issues"
   },
-  "homepage": "https://github.com/grook8958/easiermongo#readme",
+  "homepage": "easiermongo.js.org",
   "dependencies": {
     "@discordjs/collection": "^0.6.0",
     "mongoose": "^6.3.4"
