@@ -62,3 +62,4 @@ Click [here](https://easiermongo.js.org/examples/getting-started.js) to download
 - [Documentation](https://easiermongo.js.org/docs/v1/)
 - [GitHub](https://github.com/grook8958/easiermongo)
 - [npm](https://npmjs.org/package/easiermongo)
+- [Mongoose Documentation](https://mongoosejs.com/docs/)
