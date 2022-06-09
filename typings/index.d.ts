@@ -84,9 +84,11 @@ export class MongoModel {
     public _model: Model<any>;
     public makeCache: boolean;
     public cache: Collection<string,any>;
+    public create(document: Object): Promise<any>;
+    public getAll(): Promise<any>;
     public async get(id: string): Promise<any>;
     public async find(query: Object): Promise<any>;
-    public async findAll(query: Object): Promise<any[]>;
+    public async findMany(query: Object): Promise<any[]>;
     public async edit(id: string, change: Object, options?: ModelEditOptions): Promise<any>;
     public async findAndEdit(query: Object, change: Object, options?: ModelEditOptions): Promise<any>;
     public async edit(query: string, change: Object, options?: ModelEditOptions): Promise<any>;
