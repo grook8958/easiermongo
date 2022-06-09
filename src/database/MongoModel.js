@@ -33,9 +33,31 @@ class MongoModel {
     }
 
     /**
+     * Create a new document in the collection.
+     * @param {Object} document The document object according to what was set when creating the schema
+     * @returns {Promise<any>} The newly created document
+     */
+    async create(document) {
+        const doc = new this._model(document);
+        if (this.makeCache && doc) this.cache.set(doc._id, doc);
+        await doc.save();
+        return doc;
+    }
+
+    /**
+     * Get all the documents in this collection.
+     * @returns {Promise<any>} The document(s) found in the collection
+     */
+    async getAll() {
+        const docs = await this._model.find();
+        if (docs.length > 0 && this.makeCache) docs.forEach(doc => this.cache.set(doc._id, doc));
+        return docs;
+    }
+
+    /**
      * Get a document by it's id
      * @param {string} id The document `_id`
-     * @returns {Promise<any>}
+     * @returns {Promise<any>} The document matching the id
      */
     async get(id) {
         if (typeof id != 'string') throw new TypeError("INVALID_TYPE", "id", "string");
@@ -48,7 +70,7 @@ class MongoModel {
      * Searches for one document matching the query
      * * If you want to find a document with the `_id`, use `get` method instead.
      * @param {Object} query The query to search for
-     * @returns {Promise<any>}
+     * @returns {Promise<any>} The document matching the query
      */
     async find(query) {
         if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
@@ -61,9 +83,9 @@ class MongoModel {
      * Searches for all document matching the query
      * * If you want to find a document with the `_id`, use `get` method instead.
      * @param {Object} query The query to search for
-     * @returns {Promise<any[]>}
+     * @returns {Promise<any[]>} The document(s) matching the query
      */
-    async findAll(query) {
+    async findMany(query) {
         if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
         const docs = await this._model.find(query);
         if (docs.length > 0 && this.makeCache) docs.forEach(doc => this.cache.set(doc._id, doc));
@@ -80,7 +102,7 @@ class MongoModel {
      * @param {string} id The document `_id`
      * @param {Object} change The changes it should apply to the document
      * @param {ModelEditOptions} options The options of this edit
-     * @returns {Promise<any>}
+     * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
      */
     async edit(id, change, options = {}) {
         if (typeof id != 'string') throw new TypeError("INVALID_TYPE", "id", "string");
@@ -96,7 +118,7 @@ class MongoModel {
      * @param {string} query The query to search for
      * @param {Object} change The changes it should apply to the document
      * @param {ModelEditOptions} options The options of this edit
-     * @returns {Promise<any>}
+     * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
      */
     async findAndEdit(query, change, options = {}) {
         if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
@@ -112,7 +134,7 @@ class MongoModel {
      * @param {string} query The query to search for
      * @param {Object} change The changes it should apply to the documents
      * @param {ModelEditOptions} options The options of this edit
-     * @returns {Promise<any[]>}
+     * @returns {Promise<any[]>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
      */
     async editMany(query, change, options = {}) {
         if (typeof query != 'object') throw new TypeError("INVALID_TYPE", "query", "object");
