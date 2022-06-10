@@ -1,6 +1,6 @@
 module.exports = () => {
     const path = require('path');
-
+    const { AUTH } = require('./auth');
     const MongoClient = require('../src/client/MongoClient');
     const ConnectionStringBuilder = require('../src/builders/ConnectionStringBuilder');
     const SchemaBuilder = require('../src/builders/SchemaBuilder')
@@ -19,18 +19,19 @@ module.exports = () => {
     client.on('ready', async () => {
         console.log('connected')
         client.database.schemas.addSchema("tests", schema);
-        const {model} = client.database.schemas.collection.get('tests');
-        const data = await model.get("id123456");
-        await model.edit(data._id, {_id: data._id, field2: "someOtherField"}, {new: true});
-        console.log(model.cache.get('id123456'))
+        const model = client.database.schemas.collection.get('tests').model
+        await model.create({
+            _id: "some-id",
+        });
+        console.log(await model.get("some-id"))
     });
 
     const string = new ConnectionStringBuilder()
-        .setHost('some-ip')
-        .setPort(37017)
+        .setHost(AUTH.ip)
+        .setPort(AUTH.port)
         .setAuthenticationSource('admin')
         .setDbName('icy')
-        .setPassword('some-password')
+        .setPassword(AUTH.password)
         .setUsername('grook8958')
     console.log(string.toString())
     //client.connect("mongodb://grook8958:Cle%3Bent2007@192.168.1.21:27017/icy?authSource=admin");
