@@ -48,7 +48,7 @@ Download [this](https://easiermongo.js.org/examples/getting-started-fs.zip) exam
 
 Once connected and your schemas are registered you may start performing actions
 ```js
-const mySchema = client.database.schemas.collection.get('your-schema-name').schema;
+const mySchema = client.database.schemas.collection.get('your-schema-name').model;
 //You may also get your schema like this: const mySchema = client.database.schemas.SCHEMA_NAME_HERE;
 const result = await mySchema.get('some-id');
 

@@ -192,7 +192,7 @@ export interface MongoConnectionDetails {
 
 export interface ModelObject {
     name: string;
-    schema: MongoModel;
+    model: MongoModel;
 }
 
 export interface SchemaObject {
