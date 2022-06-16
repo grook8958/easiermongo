@@ -1,5 +1,6 @@
-const { SchemaTypes, Schema } = require('mongoose');
-const mongoose = require('mongoose');
+'use-strict'
+
+const { SchemaTypes, Schema } = require('mongoose')
 
 /**
  * The resolvable field types
@@ -16,19 +17,19 @@ const mongoose = require('mongoose');
  * @typedef {"STRING"|"NUMBER"|"DATE"|"BUFFER"|"BOOLEAN"|"MIXED"|"OBJECTID"|"ARRAY"|"DECIMAL128|"MAP"|string} SchemaFieldTypeResolvable
  */
 exports.SchemaFieldTypes = {
-    "STRING": SchemaTypes.String,
-    "NUMBER": SchemaTypes.Number,
-    "DATE": SchemaTypes.Date,
-    "BUFFER": SchemaTypes.Buffer,
-    "BOOLEAN": SchemaTypes.Boolean,
-    "MIXED": SchemaTypes.Mixed,
-    "OBJECTID": SchemaTypes.ObjectId,
-    "ARRAY": SchemaTypes.Array,
-    "DECIMAL128": SchemaTypes.Decimal128,
-    "MAP": SchemaTypes.Map,  
+  STRING: SchemaTypes.String,
+  NUMBER: SchemaTypes.Number,
+  DATE: SchemaTypes.Date,
+  BUFFER: SchemaTypes.Buffer,
+  BOOLEAN: SchemaTypes.Boolean,
+  MIXED: SchemaTypes.Mixed,
+  OBJECTID: SchemaTypes.ObjectId,
+  ARRAY: SchemaTypes.Array,
+  DECIMAL128: SchemaTypes.Decimal128,
+  MAP: SchemaTypes.Map
 }
 
 /**
  * @typedef {Object} Constants
- * @property {SchemaFieldTypeResolvable} SchemaFieldTypes 
+ * @property {SchemaFieldTypeResolvable} SchemaFieldTypes
  */

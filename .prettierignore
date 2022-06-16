@@ -1,0 +1,5 @@
+typings
+docs
+.vscode
+node_modules
+.prettierc.json

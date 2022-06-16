@@ -1,3 +1,5 @@
+'use-strict'
+
 /**
  * Options for a client.
  * @typedef {Object} MongoClientOptions
@@ -11,21 +13,21 @@
  */
 
 class Options extends null {
-    /**
+  /**
     * The default client options.
     * @returns {MongoClientOptions}
     */
-    static createDefault() {
-        return {
-            connectionTimeout: 5000,
-            uri: undefined,
-            esm: false,
-            useFiles: true,
-            ignoredFiles: [],
-            schemaFolderPath: undefined,
-            makeCache: true
-        }
+  static createDefault () {
+    return {
+      connectionTimeout: 5000,
+      uri: undefined,
+      esm: false,
+      useFiles: true,
+      ignoredFiles: [],
+      schemaFolderPath: undefined,
+      makeCache: true
     }
+  }
 }
 
-module.exports = Options;
+module.exports = Options

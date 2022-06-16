@@ -34,6 +34,7 @@ module.exports = () => {
         .setPassword(AUTH.password)
         .setUsername('grook8958')
     console.log(string.toString())
+    
     //client.connect("mongodb://grook8958:Cle%3Bent2007@192.168.1.21:27017/icy?authSource=admin");
 
     client.connect(string);
