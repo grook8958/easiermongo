@@ -80,6 +80,7 @@ class Database {
 
   /**
      * Disconnects the current connection.
+     * * Calls MongoClient#disconnect()
      * @returns {Promise<void>}
      */
   async disconnect () {
