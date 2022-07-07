@@ -73,8 +73,9 @@ class SchemaFileManager {
      */
   importCommonJS (options = this.client.options) {
     const schemaFiles = []
-    const files = fs.readdirSync(options.schemaFolderPath).filter(file => (file.endsWith('.js')) && !options.ignoredFiles.includes(file))
-
+ 
+    const files = fs.readdirSync(options.schemaFolderPath).filter(file => (file.endsWith('.js') || file.endsWith('.ts')) && !options.ignoredFiles.includes(file))
+    
     for (const fileName of files) {
       const file = require(`${options.schemaFolderPath}/${fileName}`)
       schemaFiles.push({ schema: file, name: fileName.replace(/\.(.*)/gm, '') })

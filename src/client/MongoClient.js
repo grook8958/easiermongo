@@ -54,7 +54,6 @@ class MongoClient extends EventEmitter {
     // Validate the options
     this._validatOptions()
 
-    console.log(path.resolve(this.options.schemaFolderPath))
   }
 
   /**
