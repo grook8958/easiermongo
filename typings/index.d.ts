@@ -189,8 +189,8 @@ export type SchemaFieldTypeResolvable =
 export interface MongoConnectionDetails {
     host: string;
     port: number;
-    username: string;
-    password: string;
+    username: string | undefined;
+    password: string | undefined;
 }
 
 export interface ModelObject {
