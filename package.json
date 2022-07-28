@@ -1,49 +1,50 @@
 {
-  "name": "easiermongo",
-  "version": "v1.0.1-beta.7",
-  "description": "Easily connect & use your mongo database",
-  "main": "./src/index.js",
-  "types": "./typings/index.d.ts",
-  "files": [
-    "src",
-    "typings"
-  ],
-  "directories": {
-    "lib": "src",
-    "test": "test"
-  },
-  "scripts": {
-    "test": "node test/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/grook8958/easiermongo.git"
-  },
-  "keywords": [
-    "MongoDB",
-    "mongoose",
-    "api",
-    "mongo",
-    "easy"
-  ],
-  "author": "grook8958",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/grook8958/easiermongo/issues"
-  },
-  "homepage": "easiermongo.js.org",
-  "dependencies": {
-    "@discordjs/collection": "^0.6.0",
-    "mongoose": "^6.3.4"
-  },
-  "devDependencies": {
-    "eslint": "^8.17.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.3",
-    "eslint-plugin-promise": "^6.0.0",
-    "prettier": "^2.7.1",
-    "prettier-eslint": "^15.0.1"
-  }
+	"name": "easiermongo",
+	"version": "v1.0.1-beta.8",
+	"description": "Easily connect & use your mongo database",
+	"main": "./src/index.js",
+	"types": "./typings/index.d.ts",
+	"files": [
+		"src",
+		"typings"
+	],
+	"directories": {
+		"lib": "src",
+		"test": "test"
+	},
+	"scripts": {
+		"test": "node test/index.js",
+    "build": "npx eslint \"src/**\" --fix && npx prettier --write ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/grook8958/easiermongo.git"
+	},
+	"keywords": [
+		"MongoDB",
+		"mongoose",
+		"api",
+		"mongo",
+		"easy"
+	],
+	"author": "grook8958",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/grook8958/easiermongo/issues"
+	},
+	"homepage": "easiermongo.js.org",
+	"dependencies": {
+		"@discordjs/collection": "^0.6.0",
+		"mongoose": "^6.3.4"
+	},
+	"devDependencies": {
+		"eslint": "^8.17.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-config-standard": "^17.0.0",
+		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-n": "^15.2.3",
+		"eslint-plugin-promise": "^6.0.0",
+		"prettier": "^2.7.1",
+		"prettier-eslint": "^15.0.1"
+	}
 }

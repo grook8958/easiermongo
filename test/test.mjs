@@ -1,3 +1,3 @@
-import easiermongo, { Constants } from "../src/";
+import easiermongo, { Constants } from '../src/';
 
-console.log(Constants)
+console.log(Constants);
