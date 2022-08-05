@@ -1,6 +1,7 @@
 'use-strict';
 
 const { Collection } = require('@discordjs/collection');
+const { TypeError } = require('../errors');
 
 /**
  * The representation of a model
@@ -70,7 +71,7 @@ class MongoModel {
 	/**
 	 * Searches for one document matching the query
 	 * * If you want to find a document with the `_id`, use `get` method instead.
-	 * @param {Object} query The query to search for
+	 * @param {MongoQuery} query The query to search for
 	 * @returns {Promise<any>} The document matching the query
 	 */
 	async find(query) {
@@ -83,7 +84,7 @@ class MongoModel {
 	/**
 	 * Searches for all document matching the query
 	 * * If you want to find a document with the `_id`, use `get` method instead.
-	 * @param {Object} query The query to search for
+	 * @param {MongoQuery} query The query to search for
 	 * @returns {Promise<any[]>} The document(s) matching the query
 	 */
 	async findMany(query) {
@@ -101,7 +102,7 @@ class MongoModel {
 	/**
 	 * Edits a document using it's id.
 	 * @param {string} id The document `_id`
-	 * @param {Object} change The changes it should apply to the document
+	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
@@ -116,8 +117,8 @@ class MongoModel {
 
 	/**
 	 * Finds a document then edits it.
-	 * @param {string} query The query to search for
-	 * @param {Object} change The changes it should apply to the document
+	 * @param {MongoQuery} query The query to search for
+	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
@@ -132,8 +133,8 @@ class MongoModel {
 
 	/**
 	 * Finds documents corresponding to the query and edits them.
-	 * @param {string} query The query to search for
-	 * @param {Object} change The changes it should apply to the documents
+	 * @param {MongoQuery} query The query to search for
+	 * @param {MongoChange} change The changes it should apply to the documents
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<any[]>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
 	 */
@@ -145,6 +146,43 @@ class MongoModel {
 		if (docs.length > 0 && options.new === true) docs.forEach((doc) => this.cache.set(doc._id, doc));
 		return docs;
 	}
+
+  /**
+   * Delete a document using its id
+   * @param {string} id The `_id` of that document.
+   * @returns {Promise<void>}
+   */
+  async delete(id) {
+    if (typeof query !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
+    const doc = await this._model.findByIdAndDelete(id);
+    this.cache.delete(doc._id);
+  }
+
+  /**
+   * Finds a document using a query then deletes it.
+   * @param {MongoQuery} query The query to search for.
+   * @returns {Promise<void>}
+   */
+  async findAndDelete(query) {
+    if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
+    const doc = await this._model.findOneAndDelete(query);
+    if (doc) {
+      this.cache.delete(_id);
+    }
+    return
+  }
+
+  /**
+   * Deletes all the documents matching the query.
+   * @param {MongoQuery} query The query to search for.
+   * @returns {Promise<void>}
+   */
+  async deleteMany(query) {
+    if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
+    const docs = await this._model.deleteMany(query);
+    if (docs.length > 0) docs.forEach(doc => this.cache.delete(doc._id));
+    return
+  }
 }
 
 module.exports = MongoModel;
