@@ -86,11 +86,14 @@ export class MongoModel {
     public create(document: Object): Promise<any>;
     public getAll(): Promise<any>;
     public get(id: string): Promise<any>;
-    public find(query: Object): Promise<any>;
-    public findMany(query: Object): Promise<any[]>;
-    public edit(id: string, change: Object, options?: ModelEditOptions): Promise<any>;
-    public findAndEdit(query: Object, change: Object, options?: ModelEditOptions): Promise<any>;
-    public edit(query: string, change: Object, options?: ModelEditOptions): Promise<any>;
+    public find(query: MongoQuery): Promise<any>;
+    public findMany(query: MongoQuery): Promise<any[]>;
+    public edit(id: string, change: MongoChange, options?: ModelEditOptions): Promise<any>;
+    public findAndEdit(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<any>;
+    public editMany(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<any>;
+    public delete(id: string): Promise<void>;
+    public findAndDelete(query: MongoQuery): Promise<void>;
+    public deleteMany(query: MongoQuery): Promise<void>;
 }
 
 export class SchemaFileManager {
@@ -144,6 +147,18 @@ export class Options extends null {
 //=============================================================================
 //                      [Interfaces and types below]
 //=============================================================================
+/**
+ * @example
+ * {_id: 'docId', field1: 'someValue'}
+ */
+export type MongoQuery = Object;
+
+/**
+ * @example
+ * {_id: 'docId', field1: 'newValue'}
+ */
+export type MongoChange = Object;
+
 export type Awaitable<T> = T | PromiseLike<T>;
 
 export interface SchemaBuilderData {
@@ -152,17 +167,26 @@ export interface SchemaBuilderData {
 }
 
 export enum SchemaFieldTypes {
+    //@ts-ignore
     STRING = SchemaTypes.String,
-    NUMNER = SchemaTypes.Number,
+    //@ts-ignore
+    NUMBER = SchemaTypes.Number,
+    //@ts-ignore
     DATE = SchemaTypes.Date,
+    //@ts-ignore
     BUFFER = SchemaTypes.Buffer,
+    //@ts-ignore
     BOOLEAN = SchemaTypes.Boolean,
+    //@ts-ignore
     MIXED = SchemaTypes.Mixed,
+    //@ts-ignore
     OBJECTID = SchemaTypes.ObjectId,
+    //@ts-ignore
     ARRAY = SchemaTypes.Array,
-    DECIMAL = SchemaTypes.Decimal128,
+    //@ts-ignore
+    DECIMAL = SchemaTypes.Decimal128, 
+    //@ts-ignore  
     MAP = SchemaTypes.Map,
-
 }
 
 export interface SchemaFieldBuilderData {
