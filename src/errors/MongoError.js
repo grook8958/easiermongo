@@ -1,16 +1,16 @@
-'user-strict';
+'user-strict'
 
 class MongoError extends Error {
-	constructor(message, reason) {
-		super();
-		this.name = 'MongoError';
+  constructor (message, reason) {
+    super()
+    this.name = 'MongoError'
 
-		this.message = message;
+    this.message = message
 
-		this.reason = reason;
+    this.reason = reason
 
-		if (Error.captureStackTrace) Error.captureStackTrace(this, MongoError);
-	}
+    if (Error.captureStackTrace) Error.captureStackTrace(this, MongoError)
+  }
 }
 
-module.exports = MongoError;
+module.exports = MongoError
