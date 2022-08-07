@@ -79,7 +79,8 @@ class SchemaFileManager {
       .filter((file) => (file.endsWith('.js') || file.endsWith('.ts')) && !options.ignoredFiles.includes(file))
 
     for (const fileName of files) {
-      const file = require(`${options.schemaFolderPath}/${fileName}`)
+      let file = require(`${options.schemaFolderPath}/${fileName}`)
+      if (file.default) file = file.default;
       schemaFiles.push({ schema: file, name: fileName.replace(/\.(.*)/gm, '') })
     }
     return schemaFiles
