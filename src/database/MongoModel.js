@@ -153,7 +153,7 @@ class MongoModel {
 	 * @returns {Promise<void>}
 	 */
   async delete (id) {
-    if (typeof query !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string')
+    if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string')
     const doc = await this._model.findByIdAndDelete(id)
     this.cache.delete(doc._id)
   }
