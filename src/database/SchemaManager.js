@@ -55,14 +55,15 @@ class SchemaManager {
 	 * @param {...SchemaObject|SchemaObject[]} optionSchemas The schemas to add.
 	 * @return {SchemaManager}
 	 */
-  addSchemas (...schemaObjects) {
+  addSchemas(...schemaObjects) {
     let objs
     if (Array.isArray(schemaObjects[0])) {
       objs = schemaObjects[0]
     } else {
       objs = schemaObjects
     }
-    for (const obj of objs) {
+    for (let obj of objs) {
+      if (obj.default) obj = obj.default;
       if (typeof obj.name !== 'string') throw new TypeError('INVALID_TYPE', 'name', 'string')
       if (obj.schema instanceof SchemaBuilder) obj.schema = obj.schema.toSchema()
       if (!(obj.schema instanceof MongoSchema)) throw new TypeError('INVALID_TYPE', 'schema', 'MongoSchema')
