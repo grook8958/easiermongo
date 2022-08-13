@@ -1,42 +1,42 @@
-'use-strict'
+'use-strict';
 
-const SchemaFileManager = require('./SchemaFileManager')
-const SchemaManager = require('./SchemaManager')
+const SchemaFileManager = require('./SchemaFileManager');
+const SchemaManager = require('./SchemaManager');
 
 /**
  * Represents a Database
  */
 class Database {
-  /**
+	/**
 	 * Represents a Database
 	 * @param {MongoClient} client The client that was used to connect to the database.
 	 */
-  constructor (client) {
-    /**
+	constructor(client) {
+		/**
 		 * The client that was used to connect to the database.
 		 * @type {MongoClient}
 		 */
-    this.client = client
+		this.client = client;
 
-    /**
+		/**
 		 * The name of the database.
 		 * @type {string}
 		 */
-    this.name = client._mongoose.connection.name
+		this.name = client._mongoose.connection.name;
 
-    /**
+		/**
 		 * The schema file manager
 		 * @type {SchemaFileManager}
 		 */
-    this._schemaFileManager = new SchemaFileManager(this)
+		this._schemaFileManager = new SchemaFileManager(this);
 
-    /**
+		/**
 		 * The schema manager
 		 * @type {SchemaManager}
 		 */
-    this.schemas = new SchemaManager(this)
+		this.schemas = new SchemaManager(this);
 
-    /**
+		/**
 		 * @typedef {Object} MongoConnectionDetails
 		 * @property {string} host The host of the connection
 		 * @property {number} port The port connected to.
@@ -44,46 +44,46 @@ class Database {
 		 * @property {string} password The password for the connection.
 		 */
 
-    /**
+		/**
 		 * The connection details used to connect to the database.
 		 * @type {MongoConnectionDetails}
 		 */
-    this.connectionDetails = {
-      host: client._mongoose.connection.host,
-      port: client._mongoose.connection.port,
-      password: this.client._mongoose.connection.pass,
-      username: this.client._mongoose.connection.user
-    }
+		this.connectionDetails = {
+			host: client._mongoose.connection.host,
+			port: client._mongoose.connection.port,
+			password: this.client._mongoose.connection.pass,
+			username: this.client._mongoose.connection.user,
+		};
 
-    // Fetch the files.
-    this._schemaFileManager.fetchFiles()
-  }
+		// Fetch the files.
+		this._schemaFileManager.fetchFiles();
+	}
 
-  /**
+	/**
 	 * Returns all the collections of the database.
 	 * @returns {Promise<Collection<Document>[]>}
 	 */
-  async getCollections () {
-    return await this.client._mongoose.connection.db.collections()
-  }
+	async getCollections() {
+		return await this.client._mongoose.connection.db.collections();
+	}
 
-  /**
+	/**
 	 * Return a collection of the database.
 	 * @param {string} name The name of the collection.
 	 * @returns {Collection<Document>}
 	 */
-  getCollection (name) {
-    return this.client._mongoose.connection.db.collection(name)
-  }
+	getCollection(name) {
+		return this.client._mongoose.connection.db.collection(name);
+	}
 
-  /**
+	/**
 	 * Disconnects the current connection.
 	 * * Calls MongoClient#disconnect()
 	 * @returns {Promise<void>}
 	 */
-  async disconnect () {
-    await this.client.disconnect()
-  }
+	async disconnect() {
+		await this.client.disconnect();
+	}
 }
 
-module.exports = Database
+module.exports = Database;
