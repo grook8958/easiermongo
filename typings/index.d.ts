@@ -94,7 +94,7 @@ export class MongoModel {
     public delete(id: string): Promise<void>;
     public findAndDelete(query: MongoQuery): Promise<void>;
     public deleteMany(query: MongoQuery): Promise<void>;
-    public update(id: string, change: MongoChange, options?: ModelEditOptions)
+    public update(id: string, change: MongoChange, options?: ModelEditOptions): Promise<any>;
 }
 
 export class SchemaFileManager {
