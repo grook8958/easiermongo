@@ -69,7 +69,7 @@ export class SchemaManager {
     public constructor(database: Database);
     public database: Database;
     public collection: Collection<string,ModelObject>
-    public addSchema(name: string, schema: MongoSchema): SchemaManager;
+    public addSchema(name: string, schema: MongoSchema|SchemaBuilder): SchemaManager;
     public addSchemas(...schemaObjects: SchemaObject[]): SchemaManager;
 }
 
@@ -94,6 +94,7 @@ export class MongoModel {
     public delete(id: string): Promise<void>;
     public findAndDelete(query: MongoQuery): Promise<void>;
     public deleteMany(query: MongoQuery): Promise<void>;
+    public update(id: string, change: MongoChange, options?: ModelEditOptions)
 }
 
 export class SchemaFileManager {
@@ -134,6 +135,7 @@ export class Util extends null {
     public static mergeDefault(def: any, given: any): any;
     public static handleError(error: Error): MongoError;
     public static checkArray(array: Array<any>, type: string): boolean;
+    public static updateObject(object: Object, change: Object): Object;
 }
 
 export class MongoError extends Error {
@@ -149,13 +151,13 @@ export class Options extends null {
 //=============================================================================
 /**
  * @example
- * {_id: 'docId', field1: 'someValue'}
+ * {field1: 'searchValue'}
  */
-export type MongoQuery = Object;
+ export type MongoQuery = Object;
 
 /**
  * @example
- * {_id: 'docId', field1: 'newValue'}
+ * {field1: 'newValue'}
  */
 export type MongoChange = Object;
 
@@ -224,7 +226,7 @@ export interface ModelObject {
 
 export interface SchemaObject {
     name: string;
-    schema: MongoSchema;
+    schema: MongoSchema|SchemaBuilder;
 }
 
 export type ModelEditOptions = QueryOptions;
