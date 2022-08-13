@@ -4,6 +4,5 @@
 	"singleQuote": true,
 	"quoteProps": "as-needed",
 	"trailingComma": "all",
-	"endOfLine": "lf",
-	"extends": ["eslint-config-prettier", "prettier"]
+	"endOfLine": "lf"
 }

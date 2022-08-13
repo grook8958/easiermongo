@@ -4,13 +4,13 @@
 		"commonjs": true,
 		"es2021": true
 	},
-	"extends": ["standard"],
+	"extends": ["standard", "eslint-config-prettier"],
 	"parserOptions": {
 		"ecmaVersion": "latest"
 	},
 	"rules": {
 		"requireStringLiterals": "off",
-		"no-unused-vars": "warn",
+		"no-unused-vars": "error",
 		"valid-typeof": "warn"
 	}
 }
