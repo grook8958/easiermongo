@@ -163,6 +163,14 @@ export type MongoChange = Object;
 
 export type AnyObject = {};
 
+/**
+ * @example
+ * {
+ *   _id: 'someId',
+ *   __v: 0,
+ *   someField: true
+ * }
+ */
 export interface MongoDocument {
     _id: string,
     __v: number,
@@ -269,5 +277,6 @@ export interface MongoClientEvents {
     reconnected: [],
     close: [],
     ready: [],
+    file: [file: string]
 }
 
