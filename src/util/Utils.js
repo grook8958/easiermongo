@@ -54,14 +54,19 @@ class Utils extends null {
 	 * @param {MongoChange} change What to change in the `object`
 	 * @returns {Object}
 	 */
-	 static updateDocument(object, change) {
+	static updateDocument(object, change) {
 		if (Object.is(object, change)) return;
 
 		const newObject = object._doc;
 		const objectFields = [];
 		for (const prop in newObject) {
 			if (typeof newObject[prop] !== 'object') continue;
-			if (Object.getOwnPropertyDescriptors(newObject)[prop].configurable === false || Object.getOwnPropertyDescriptors(newObject)[prop].enumerable === false || Object.getOwnPropertyDescriptors(newObject)[prop].writable === false) continue;
+			if (
+				Object.getOwnPropertyDescriptors(newObject)[prop].configurable === false ||
+				Object.getOwnPropertyDescriptors(newObject)[prop].enumerable === false ||
+				Object.getOwnPropertyDescriptors(newObject)[prop].writable === false
+			)
+				continue;
 			objectFields.push(prop);
 		}
 		for (const prop of objectFields) {
