@@ -1,6 +1,7 @@
 'use-strict';
 
 const fs = require('fs');
+const { MongoClientEvents } = require('../util/Constants');
 
 /**
  * A manager to fetch the schemas from a folder.
@@ -45,7 +46,7 @@ class SchemaFileManager {
 
 		await this.database.schemas.addSchemas(this.files);
 
-		this.database.client.emit('ready');
+		this.database.client.emit(MongoClientEvents.READY);
 	}
 
 	/**
@@ -61,6 +62,7 @@ class SchemaFileManager {
 		for (const fileName of files) {
 			const file = await import(`file:///${options.schemaFolderPath}/${fileName}`);
 			schemaFiles.push({ schema: file.default, name: fileName.replace(/\.(.*)/gm, '') });
+			this.client.emit(MongoClientEvents.REGISTERING_FILE, fileName);
 		}
 
 		return schemaFiles;
@@ -82,6 +84,7 @@ class SchemaFileManager {
 			let file = require(`${options.schemaFolderPath}/${fileName}`);
 			if (file.default) file = file.default;
 			schemaFiles.push({ schema: file, name: fileName.replace(/\.(.*)/gm, '') });
+			this.client.emit(MongoClientEvents.REGISTERING_FILE, fileName);
 		}
 		return schemaFiles;
 	}
