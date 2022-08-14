@@ -36,8 +36,17 @@ class MongoModel {
 
 	/**
 	 * Create a new document in the collection.
-	 * @param {Object} document The document object according to what was set when creating the schema
+	 * @param {MongoDocument} document The document object according to what was set when creating the schema
 	 * @returns {Promise<MongoDocument>} The newly created document
+	 * @example
+	 * model.create({
+	 * 	_id: 'someId',
+	 * 	name: 'John',
+	 * 	lastName: 'Doe',
+	 * 	age: 47
+	 * }).then(document => {
+	 * 	console.log(document); //{_id: 'someId', __v: 0, name: 'John', lastName: 'Doe', age: 47}
+	 * }).catch(err => console.error(err))
 	 */
 	async create(document) {
 		const doc = new this._model(document);
@@ -60,6 +69,10 @@ class MongoModel {
 	 * Get a document by it's id
 	 * @param {string} id The document `_id`
 	 * @returns {Promise<MongoDocument>} The document matching the id
+	 * @example
+	 * const document = await model.get('someId')
+	 * 	.catch(err => console.error(err))
+	 * console.log(document)
 	 */
 	async get(id) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
@@ -73,6 +86,10 @@ class MongoModel {
 	 * * If you want to find a document with the `_id`, use `get` method instead.
 	 * @param {MongoQuery} query The query to search for
 	 * @returns {Promise<MongoDocument>} The document matching the query
+	 * @example
+	 * const document = await model.find({ name: 'John', lastName: 'Doe' })
+	 * 	.catch(err => console.error(err))
+	 * console.log(document)
 	 */
 	async find(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
@@ -105,6 +122,12 @@ class MongoModel {
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @example 
+	 * //Change the age to 48.
+	 * //Set option `new` to true to return the edited document
+	 * const newDocument = await model.edit('someId', { age: 48 }, { new: true })
+	 * 	.catch(err => console.error(err))
+	 * console.log(newDocument)
 	 */
 	async edit(id, change, options = {}) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
@@ -151,6 +174,10 @@ class MongoModel {
 	 * Delete a document using its id
 	 * @param {string} id The `_id` of that document.
 	 * @returns {Promise<void>}
+	 * @example
+	 * model.delete('someId')
+	 * 	.then(() => console.log('Deleted document of id "someId"'))
+	 * 	.catch(err => console.error(err))
 	 */
 	async delete(id) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
