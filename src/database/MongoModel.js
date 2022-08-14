@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../errors');
+const Utils = require('../util/Utils');
 
 /**
  * The representation of a model
@@ -222,7 +223,7 @@ class MongoModel {
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
 		const oldDoc = await this.get(id);
-		const newDoc = Object.assign(oldDoc, change);
+		const newDoc = Utils.updateDocument(oldDoc, change);
 		return await this.edit(id, newDoc, options);
 	}
 
@@ -239,7 +240,7 @@ class MongoModel {
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
 		const oldDoc = await this.find(query);
-		const newDoc = Object.assign(oldDoc, change);
+		const newDoc = Utils.updateDocument(oldDoc, change);
 		return await this.findAndEdit(query, newDoc, options);
 	}
 
@@ -258,7 +259,7 @@ class MongoModel {
 		const oldDocs = await this.findMany(query);
 		const newDocs = [];
 		for (const oldDoc of oldDocs) {
-			const newDoc = Object.assign(oldDoc, change);
+			const newDoc = Utils.updateDocument(oldDoc, change);
 			const doc = await this.edit(newDoc._id, newDoc, options);
 			newDoc.push(doc);
 		}

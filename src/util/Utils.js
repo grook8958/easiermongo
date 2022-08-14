@@ -48,14 +48,20 @@ class Utils extends null {
 	 * @param {Object} change What to change in the `object`
 	 * @returns {Object}
 	 */
-	static updateObject(object, change) {
+	/**
+	 * Updates an object according to a `change` object.
+	 * @param {MongoDocument} object The object to update
+	 * @param {MongoChange} change What to change in the `object`
+	 * @returns {Object}
+	 */
+	 static updateDocument(object, change) {
 		if (Object.is(object, change)) return;
 
-		const newObject = object;
+		const newObject = object._doc;
 		const objectFields = [];
-
 		for (const prop in newObject) {
 			if (typeof newObject[prop] !== 'object') continue;
+			if (Object.getOwnPropertyDescriptors(newObject)[prop].configurable === false || Object.getOwnPropertyDescriptors(newObject)[prop].enumerable === false || Object.getOwnPropertyDescriptors(newObject)[prop].writable === false) continue;
 			objectFields.push(prop);
 		}
 		for (const prop of objectFields) {
@@ -63,11 +69,10 @@ class Utils extends null {
 				if (typeof newObject[prop][key] !== 'object') {
 					newObject[prop][key] = change[prop][key];
 				} else {
-					this.updateObject(newObject[prop], change[prop]);
+					this.updateDocument(newObject[prop], change[prop]);
 				}
 			}
 		}
-
 		return newObject;
 	}
 }

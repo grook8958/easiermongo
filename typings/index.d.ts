@@ -135,7 +135,7 @@ export class Util extends null {
     public static mergeDefault(def: any, given: any): any;
     public static handleError(error: Error): MongoError;
     public static checkArray(array: Array<any>, type: string): boolean;
-    public static updateObject(object: Object, change: Object): Object;
+    public static updateObject(object: MongoDocument, change: Object): Object;
 }
 
 export class MongoError extends Error {
