@@ -7,10 +7,26 @@ const Options = require('../util/Options');
 const Utils = require('../util/Utils');
 const Database = require('../database/Database');
 const ConnectionStringBuilder = require('../builders/ConnectionStringBuilder');
+const { MongoClientEvents } = require('../util/Constants');
 
 /**
  * The starting point of interacting with your MongoDB
  * @extends {EventEmitter}
+ * @example
+ * const { MongoClient } = require('easiermongo');
+ * const path = require('path');
+ * 
+ * const mongoClient = new MongoClient({
+ * 	useFiles: true,
+ * 	esm: false,
+ * 	schemaFolderPath: path.join(__dirname, 'schema')
+ * });
+ * 
+ * mongoClient.on('ready', () => {
+ * 	console.log('MongoClient ready!')
+ * });
+ * 
+ * mongoClient.connect('mongodb://127.0.0.1:27017');
  */
 class MongoClient extends EventEmitter {
 	/**
@@ -74,6 +90,10 @@ class MongoClient extends EventEmitter {
 	 * Opens a new connnection to your database.
 	 * @param {ConnectionStringBuilder|string|null} uri The URI connection string of your database
 	 * @returns {Promise<Database>}
+	 * @example
+	 * mongoClient.connect('mongodb://127.0.0.1:27017')
+	 * 	.then(database => console.log(`Connected to ${database.name}!`))
+	 * 	.catch(err => console.error(err))
 	 */
 	async connect(uri = this.options.uri) {
 		if (!(uri instanceof ConnectionStringBuilder) && typeof uri !== 'string') {
@@ -93,13 +113,13 @@ class MongoClient extends EventEmitter {
 		// Create the database object
 		this.database = new Database(this);
 
-		this.emit('connected', this.database);
+		this.emit(MongoClientEvents.CONNECTION_CONNECTED, this.database);
 
 		// Start handling handling events
 		this.handleEvents();
 
 		// Emit the 'ready' event
-		if (this.options.useFiles === false) this.emit('ready');
+		if (this.options.useFiles === false) this.emit(MongoClientEvents.READY);
 
 		return this.database;
 	}
@@ -151,31 +171,31 @@ class MongoClient extends EventEmitter {
 	 */
 	handleEvents() {
 		this._mongoose.connection.on('error', (err) => {
-			this.emit('error', err);
+			this.emit(MongoClientEvents.ERROR, err);
 		});
 
 		this._mongoose.connection.on('disconnected', () => {
-			this.emit('disconnected');
+			this.emit(MongoClientEvents.CONNECTION_DISCONNECTED);
 		});
 
 		this._mongoose.connection.on('disconnecting', () => {
-			this.emit('disconnecting');
+			this.emit(MongoClientEvents.CONNECTION_DISCONNECTING);
 		});
 
 		this._mongoose.connection.on('connected', () => {
-			this.emit('connected');
+			this.emit(MongoClientEvents.CONNECTION_CONNECTED);
 		});
 
 		this._mongoose.connection.on('connecting', () => {
-			this.emit('connecting');
+			this.emit(MongoClientEvents.CONNECTION_CONNECTING);
 		});
 
 		this._mongoose.connection.on('reconnected', () => {
-			this.emit('reconnected');
+			this.emit(MongoClientEvents.CONNECTION_RECONNECTED);
 		});
 
 		this._mongoose.connection.on('close', () => {
-			this.emit('close');
+			this.emit(MongoClientEvents.CONNECTION_CLOSE);
 		});
 	}
 }
