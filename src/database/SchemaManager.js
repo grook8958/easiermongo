@@ -32,6 +32,11 @@ class SchemaManager {
 	 * @param {string} name The name of the schema.
 	 * @param {MongoSchema|SchemaBuilder} schema The schema to add to the manager.
 	 * @return {SchemaManager}
+	 * @example
+	 * mongoClient.database.schemas.addSchema({
+	 * 	name: 'mySchema',
+	 * 	schema: mySchema
+	 * })
 	 */
 	addSchema(name, schema) {
 		this.addSchemas({ name, schema });
