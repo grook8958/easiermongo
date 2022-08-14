@@ -82,19 +82,19 @@ export class MongoModel {
     public constructor(model: Model<any>, makeCache: boolean);
     public _model: Model<any>;
     public makeCache: boolean;
-    public cache: Collection<string,any>;
-    public create(document: Object): Promise<any>;
+    public cache: Collection<string,MongoDocument>;
+    public create(document: Object): Promise<MongoDocument>;
     public getAll(): Promise<any>;
-    public get(id: string): Promise<any>;
-    public find(query: MongoQuery): Promise<any>;
-    public findMany(query: MongoQuery): Promise<any[]>;
-    public edit(id: string, change: MongoChange, options?: ModelEditOptions): Promise<any>;
-    public findAndEdit(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<any>;
-    public editMany(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<any>;
+    public get(id: string): Promise<MongoDocument>;
+    public find(query: MongoQuery): Promise<MongoDocument>;
+    public findMany(query: MongoQuery): Promise<MongoDocument[]>;
+    public edit(id: string, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
+    public findAndEdit(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
+    public editMany(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
     public delete(id: string): Promise<void>;
     public findAndDelete(query: MongoQuery): Promise<void>;
     public deleteMany(query: MongoQuery): Promise<void>;
-    public update(id: string, change: MongoChange, options?: ModelEditOptions): Promise<any>;
+    public update(id: string, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
 }
 
 export class SchemaFileManager {
@@ -160,6 +160,14 @@ export class Options extends null {
  * {field1: 'newValue'}
  */
 export type MongoChange = Object;
+
+export type AnyObject = {};
+
+export interface MongoDocument {
+    _id: string,
+    __v: number,
+    [propName: string]: any;
+}
 
 export type Awaitable<T> = T | PromiseLike<T>;
 
