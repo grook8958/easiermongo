@@ -2,7 +2,6 @@
 
 const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../errors');
-const Utils = require('../util/Utils');
 
 /**
  * The representation of a model
@@ -30,7 +29,7 @@ class MongoModel {
 		 * The cache of this model
 		 * * Easiermongo will only cache documents if the `makeCache` option is set to `true`
 		 * * When using the methods `edit`, `findAndEdit` and `editMany` the cache won't be updated unless the option `new` is set to `true`
-		 * @type {Collection<string,any>}
+		 * @type {Collection<string,MongoDocument>}
 		 */
 		this.cache = new Collection();
 	}
@@ -38,7 +37,7 @@ class MongoModel {
 	/**
 	 * Create a new document in the collection.
 	 * @param {Object} document The document object according to what was set when creating the schema
-	 * @returns {Promise<any>} The newly created document
+	 * @returns {Promise<MongoDocument>} The newly created document
 	 */
 	async create(document) {
 		const doc = new this._model(document);
@@ -49,7 +48,7 @@ class MongoModel {
 
 	/**
 	 * Get all the documents in this collection.
-	 * @returns {Promise<any>} The document(s) found in the collection
+	 * @returns {Promise<MongoDocument>} The document(s) found in the collection
 	 */
 	async getAll() {
 		const docs = await this._model.find();
@@ -60,7 +59,7 @@ class MongoModel {
 	/**
 	 * Get a document by it's id
 	 * @param {string} id The document `_id`
-	 * @returns {Promise<any>} The document matching the id
+	 * @returns {Promise<MongoDocument>} The document matching the id
 	 */
 	async get(id) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
@@ -73,7 +72,7 @@ class MongoModel {
 	 * Searches for one document matching the query
 	 * * If you want to find a document with the `_id`, use `get` method instead.
 	 * @param {MongoQuery} query The query to search for
-	 * @returns {Promise<any>} The document matching the query
+	 * @returns {Promise<MongoDocument>} The document matching the query
 	 */
 	async find(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
@@ -86,7 +85,7 @@ class MongoModel {
 	 * Searches for all document matching the query
 	 * * If you want to find a document with the `_id`, use `get` method instead.
 	 * @param {MongoQuery} query The query to search for
-	 * @returns {Promise<any[]>} The document(s) matching the query
+	 * @returns {Promise<MongoDocument[]>} The document(s) matching the query
 	 */
 	async findMany(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
@@ -105,7 +104,7 @@ class MongoModel {
 	 * @param {string} id The document `_id`
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
 	async edit(id, change, options = {}) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
@@ -121,7 +120,7 @@ class MongoModel {
 	 * @param {MongoQuery} query The query to search for
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
 	async findAndEdit(query, change, options = {}) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
@@ -137,7 +136,7 @@ class MongoModel {
 	 * @param {MongoQuery} query The query to search for
 	 * @param {MongoChange} change The changes it should apply to the documents
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<any[]>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
+	 * @returns {Promise<MongoDocument[]>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
 	 */
 	async editMany(query, change, options = {}) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
@@ -189,15 +188,54 @@ class MongoModel {
 	 * @param {string} id The id of the document to update
 	 * @param {MongoChange} change What to change in the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<any>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
 	async update(id, change, options = {}) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
 		const oldDoc = await this.get(id);
-		const newDoc = Utils.updateObject(oldDoc, change);
-		await this.edit(id, newDoc, options);
+		const newDoc = Object.assign(oldDoc, change);
+		return await this.edit(id, newDoc, options);
+	}
+
+	/**
+	 * Updates a document without overriding content of objects
+	 * * NOTE: This process takes longer and uses more ressourecs, prioritize `MongoModel#edit()` when able.
+	 * @param {MongoQuery} query The to search for
+	 * @param {MongoChange} change What to change in the document
+	 * @param {ModelEditOptions} options The options of this edit
+	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 */
+	async findAndUpdate(query, change, options = {}) {
+		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
+		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
+		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
+		const oldDoc = await this.find(query);
+		const newDoc = Object.assign(oldDoc, change);
+		return await this.findAndEdit(query, newDoc, options);
+	}
+
+	/**
+	 * Updates a document without overriding content of objects
+	 * * NOTE: This process takes longer and uses more ressourecs, prioritize `MongoModel#edit()` when able.
+	 * @param {MongoQuery} query The to search for
+	 * @param {MongoChange} change What to change in the document
+	 * @param {ModelEditOptions} options The options of this edit
+	 * @returns {Promise<MongoDocument[]>} The old documents or if `options.new` is set to `true` then it will return the newly edited documents.
+	 */
+	async updateMany(query, change, options = {}) {
+		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
+		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
+		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
+		const oldDocs = await this.findMany(query);
+		const newDocs = [];
+		for (const oldDoc of oldDocs) {
+			const newDoc = Object.assign(oldDoc, change);
+			const doc = await this.edit(newDoc._id, newDoc, options);
+			newDoc.push(doc);
+		}
+		return newDocs;
 	}
 }
 
