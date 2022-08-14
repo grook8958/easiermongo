@@ -50,8 +50,8 @@ exports.MongoClientEvents = {
 	CONNECTION_CONNECTING: 'connecting',
 	CONNECTION_RECONNECTED: 'reconnected',
 	CONNECTION_CLOSE: 'close',
-	REGISTERING_FILE: 'file'
-}
+	REGISTERING_FILE: 'file',
+};
 
 /**
  * @typedef {Object} Constants

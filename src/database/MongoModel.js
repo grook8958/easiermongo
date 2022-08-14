@@ -122,7 +122,7 @@ class MongoModel {
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
-	 * @example 
+	 * @example
 	 * //Change the age to 48.
 	 * //Set option `new` to true to return the edited document
 	 * const newDocument = await model.edit('someId', { age: 48 }, { new: true })

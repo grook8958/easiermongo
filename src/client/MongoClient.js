@@ -15,17 +15,17 @@ const { MongoClientEvents } = require('../util/Constants');
  * @example
  * const { MongoClient } = require('easiermongo');
  * const path = require('path');
- * 
+ *
  * const mongoClient = new MongoClient({
  * 	useFiles: true,
  * 	esm: false,
  * 	schemaFolderPath: path.join(__dirname, 'schema')
  * });
- * 
+ *
  * mongoClient.on('ready', () => {
  * 	console.log('MongoClient ready!')
  * });
- * 
+ *
  * mongoClient.connect('mongodb://127.0.0.1:27017');
  */
 class MongoClient extends EventEmitter {
