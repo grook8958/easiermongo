@@ -14,7 +14,7 @@ module.exports = () => {
 
 	const schema = new SchemaBuilder()
 		.addField((field) => field.setName('_id').setType('STRING').setRequired(true))
-		.addField((field) => field.setName('field2').setType('STRING').setDefault('someDefault'));
+		.addField((field) => field.setName('expire').setType('DATE').setTTL(20));
 
 	client.on('ready', async () => {
 		console.log('connected');
@@ -22,6 +22,7 @@ module.exports = () => {
 		const model = client.database.schemas.collection.get('tests').model;
 		await model.create({
 			_id: 'some-id',
+			expire: Date.now() + 20_000
 		});
 		console.log(await model.get('some-id'));
 	});
