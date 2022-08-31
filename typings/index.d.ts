@@ -108,17 +108,18 @@ export class SchemaFileManager {
 }
 
 export class SchemaBuilder {
-    public constructor(data?: SchemaBuilderData);
+    public constructor(data?: SchemaBuilderData, skipValidation?: boolean);
     public fields: SchemaFieldBuilder[];
     public options: SchemaOptions;
     public addField(input: (builder: SchemaFieldBuilder) => SchemaFieldBuilder): SchemaBuilder;
     public setOptions(options: SchemaOptions): SchemaBuilder;
     public toJSON(): any;
     public toSchema(): MongoSchema;
+    private _validateOptions(skipValidation?: boolean): void;
 }
 
 export class SchemaFieldBuilder {
-    public constructor(data?: SchemaFieldBuilderData);
+    public constructor(data?: SchemaFieldBuilderData, skipValidation?: boolean);
     public name: string;
     public type: SchemaFieldType;
     public required: boolean;
@@ -127,8 +128,10 @@ export class SchemaFieldBuilder {
     public setType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldBuilder;
     public setRequired(required: boolean): SchemaFieldBuilder;
     public setDefault(value: any): SchemaFieldBuilder;
+    public setTTL(ttl: number): SchemaFieldBuilder;
     public toJSON(): any;
     private resolveFieldType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldType;
+    private _validateOptions(skipValidation?: boolean): void;
 }
 
 export class Util extends null {
@@ -212,6 +215,7 @@ export interface SchemaFieldBuilderData {
     type: SchemaFieldType;
     required: boolean;
     default: any;
+    ttl: number;
 }
 
 export type SchemaFieldType = typeof SchemaTypes;
