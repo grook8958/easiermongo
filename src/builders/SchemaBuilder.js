@@ -2,6 +2,7 @@
 
 const MongoSchema = require('../database/MongoSchema');
 const SchemaFieldBuilder = require('./SchemaFieldBuilder');
+const { TypeError } = require('../errors');
 
 /**
  * A builder to create a new schema
@@ -16,7 +17,7 @@ class SchemaBuilder {
 	 * A builder to create a new schema
 	 * @param {SchemaBuilderData} data
 	 */
-	constructor(data = {}) {
+	constructor(data = {}, skipValidation = false) {
 		/**
 		 * The fields of this schema
 		 * @type {SchemaFieldBuilder[]}
@@ -28,6 +29,12 @@ class SchemaBuilder {
 		 * @type {SchemaOptions}
 		 */
 		this.options = data.options ?? {};
+
+		/**
+		 * Wether to skip validation of the fields.
+		 * @type {Boolean}
+		 */
+		this.skipValidation = skipValidation;
 	}
 
 	/**
@@ -36,7 +43,7 @@ class SchemaBuilder {
 	 * @returns {SchemaBuilder}
 	 */
 	addField(input) {
-		const result = input(new SchemaFieldBuilder());
+		const result = input(new SchemaFieldBuilder({}, this.skipValidation));
 		this.fields.push(result);
 		return this;
 	}
@@ -52,10 +59,22 @@ class SchemaBuilder {
 	}
 
 	/**
+	 * Validate the options
+	 * @param skipValidation Whether to skip validation
+	 * @private
+	 */
+	_validateOptions(skipValidation = this.skipValidation) {
+		if (skipValidation) return;
+		if (!Array.isArray(this.fields) && !this.fields.some(field => field instanceof SchemaFieldBuilder)) throw new TypeError('INVALID_TYPE', 'fields', 'Array of SchemaFieldBuilders', true);
+		if (this.options && typeof this.options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+	}
+
+	/**
 	 * Returns the JSON object
 	 * @returns {Object}
 	 */
 	toJSON() {
+		this._validateOptions();
 		const obj = {};
 		for (const field of this.fields) {
 			if (field instanceof SchemaFieldBuilder) {
