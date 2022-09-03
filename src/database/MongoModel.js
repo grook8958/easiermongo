@@ -188,7 +188,7 @@ class MongoModel {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		const doc = await this._model.findByIdAndDelete(id);
 		this.cache.delete(doc._id);
-		return;
+		
 	}
 
 	/**
@@ -202,7 +202,7 @@ class MongoModel {
 		if (doc) {
 			this.cache.delete(doc._id);
 		}
-		return;
+		
 	}
 
 	/**
@@ -214,7 +214,7 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.deleteMany(query);
 		if (docs.length > 0) docs.forEach((doc) => this.cache.delete(doc._id));
-		return;
+		
 	}
 
 	/**

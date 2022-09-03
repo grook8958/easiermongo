@@ -42,6 +42,7 @@ class MongoDocument {
 
         this._parseFields();
     }
+
     /**
      * The unique Identifier (ID) of the document
      * @type {string}
@@ -76,7 +77,7 @@ class MongoDocument {
      */
     async delete() {
         await this.$model.delete(this._id);
-        return;
+        
     }
 
     /**
@@ -101,7 +102,7 @@ class MongoDocument {
             if (f === '_id' || f === '__v') continue;
             this[f] = doc[f];
         };
-        return;
+        
     }
 
     

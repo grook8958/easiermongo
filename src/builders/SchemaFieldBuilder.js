@@ -136,6 +136,7 @@ class SchemaFieldBuilder {
 		if (SchemaFieldTypes[type]) return SchemaFieldTypes[type];
 		else return type;
 	}
+
 	/**
 	 * Validate options
 	 * @param {boolean} skipValidation Wether to skip validation.
