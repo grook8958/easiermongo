@@ -1,3 +1,5 @@
+const DocumentBuilder = require('../src/builders/DocumentBuilder');
+
 module.exports = () => {
 	const path = require('path');
 	const { AUTH } = require('./auth');
@@ -14,17 +16,21 @@ module.exports = () => {
 
 	const schema = new SchemaBuilder()
 		.addField((field) => field.setName('_id').setType('STRING').setRequired(true))
-		.addField((field) => field.setName('expire').setType('DATE').setTTL(20));
+		.addField((field) => field.setName('test').setType('MIXED'));
 
 	client.on('ready', async () => {
 		console.log('connected');
 		client.database.schemas.addSchema('tests', schema);
 		const model = client.database.schemas.collection.get('tests').model;
-		await model.create({
+		/*await model.create({
 			_id: 'some-id',
-			expire: Date.now() + 20_000
-		});
-		console.log(await model.get('some-id'));
+			test: { field: "lol" }
+		});*/
+		await model.create(new DocumentBuilder().setId('some-id').addField('test', { yeet: "heeeheee"}))
+		const doc = await model.get('some-id')
+		console.log(doc);
+		//await model.update('some-id', { test: { field: "e" }})
+		//console.log(await model.get('some-id'));
 	});
 
 	const string = new ConnectionStringBuilder()
