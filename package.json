@@ -36,7 +36,7 @@
 	},
 	"homepage": "easiermongo.js.org",
 	"dependencies": {
-		"@discordjs/collection": "^0.6.0",
+		"@discordjs/collection": "^1.1.0",
 		"mongoose": "^6.3.4"
 	},
 	"devDependencies": {
