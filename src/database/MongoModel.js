@@ -3,6 +3,8 @@
 const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../errors');
 const Utils = require('../util/Utils');
+const MongoDocument = require('./MongoDocument');
+const DocumentBuilder = require('../builders/DocumentBuilder')
 
 /**
  * The representation of a model
@@ -37,7 +39,7 @@ class MongoModel {
 
 	/**
 	 * Create a new document in the collection.
-	 * @param {MongoDocument} document The document object according to what was set when creating the schema
+	 * @param {DocumentBuilder|BaseDocumentData} document The document object according to what was set when creating the schema
 	 * @returns {Promise<MongoDocument>} The newly created document
 	 * @example
 	 * model.create({
@@ -50,9 +52,11 @@ class MongoModel {
 	 * }).catch(err => console.error(err))
 	 */
 	async create(document) {
-		const doc = new this._model(document);
+		if (document instanceof DocumentBuilder) document = document.toJSON();
+		const _doc = new this._model(document);
+		const doc = new MongoDocument(_doc, this);
 		if (this.makeCache && doc) this.cache.set(doc._id, doc);
-		await doc.save();
+		await _doc.save();
 		return doc;
 	}
 
@@ -62,8 +66,8 @@ class MongoModel {
 	 */
 	async getAll() {
 		const docs = await this._model.find();
-		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, doc));
-		return docs;
+		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, new MongoDocument(doc, this)));
+		return docs.map(d => new MongoDocument(d, this));
 	}
 
 	/**
@@ -77,7 +81,7 @@ class MongoModel {
 	 */
 	async get(id) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
-		const doc = await this._model.findById(id);
+		const doc = new MongoDocument(await this._model.findById(id), this);
 		if (doc && this.makeCache) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -94,7 +98,7 @@ class MongoModel {
 	 */
 	async find(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
-		const doc = await this._model.findOne(query);
+		const doc = new MongoDocument(await this._model.findOne(query), this);
 		if (doc && this.makeCache) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -108,8 +112,8 @@ class MongoModel {
 	async findMany(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.find(query);
-		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, doc));
-		return docs;
+		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, new MongoDocument(doc, this)));
+		return docs.map(d => new MongoDocument(d, this));
 	}
 
 	// Only for naming purpose
@@ -134,7 +138,7 @@ class MongoModel {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const doc = await this._model.findByIdAndUpdate(id, change, options);
+		const doc = new MongoDocument(await this._model.findByIdAndUpdate(id, change, options), this);
 		if (doc && options.new === true) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -150,7 +154,7 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const doc = await this._model.findOneAndUpdate(query, change, options);
+		const doc = new MongoDocument(await this._model.findOneAndUpdate(query, change, options), this);
 		if (doc && options.new === true) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -166,7 +170,7 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const docs = await this._model.updateMany(query, change, options);
+		const docs = await this._model.updateMany(query, change, options).map(d => new MongoDocument(d, this));
 		if (docs.length > 0 && options.new === true) docs.forEach((doc) => this.cache.set(doc._id, doc));
 		return docs;
 	}
@@ -184,6 +188,7 @@ class MongoModel {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		const doc = await this._model.findByIdAndDelete(id);
 		this.cache.delete(doc._id);
+		return;
 	}
 
 	/**
@@ -197,6 +202,7 @@ class MongoModel {
 		if (doc) {
 			this.cache.delete(doc._id);
 		}
+		return;
 	}
 
 	/**
@@ -208,11 +214,12 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.deleteMany(query);
 		if (docs.length > 0) docs.forEach((doc) => this.cache.delete(doc._id));
+		return;
 	}
 
 	/**
 	 * Updates a document without overriding content of objects
-	 * * NOTE: This process takes longer and uses more ressourecs, prioritize `MongoModel#edit()` when able.
+	 * * NOTE: This process takes longer and uses more ressources and is likely not to work if not working with objects, prioritize `MongoModel#edit()` when able.
 	 * @param {string} id The id of the document to update
 	 * @param {MongoChange} change What to change in the document
 	 * @param {ModelEditOptions} options The options of this edit
