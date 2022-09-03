@@ -83,7 +83,7 @@ export class MongoModel {
     public _model: Model<any>;
     public makeCache: boolean;
     public cache: Collection<string,MongoDocument>;
-    public create(document: Object): Promise<MongoDocument>;
+    public create(document: DocumentBuilder|BaseDocumentData): Promise<MongoDocument>;
     public getAll(): Promise<any>;
     public get(id: string): Promise<MongoDocument>;
     public find(query: MongoQuery): Promise<MongoDocument>;
@@ -109,8 +109,8 @@ export class SchemaFileManager {
 
 export class SchemaBuilder {
     public constructor(data?: SchemaBuilderData, skipValidation?: boolean);
-    public fields: SchemaFieldBuilder[];
-    public options: SchemaOptions;
+    public fields?: SchemaFieldBuilder[];
+    public options?: SchemaOptions;
     public addField(input: (builder: SchemaFieldBuilder) => SchemaFieldBuilder): SchemaBuilder;
     public setOptions(options: SchemaOptions): SchemaBuilder;
     public toJSON(): any;
@@ -120,10 +120,10 @@ export class SchemaBuilder {
 
 export class SchemaFieldBuilder {
     public constructor(data?: SchemaFieldBuilderData, skipValidation?: boolean);
-    public name: string;
-    public type: SchemaFieldType;
-    public required: boolean;
-    public default: any;
+    public name?: string;
+    public type?: SchemaFieldType;
+    public required?: boolean;
+    public default?: any;
     public setName(name: string): SchemaFieldBuilder;
     public setType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldBuilder;
     public setRequired(required: boolean): SchemaFieldBuilder;
@@ -138,7 +138,7 @@ export class Util extends null {
     public static mergeDefault(def: any, given: any): any;
     public static handleError(error: Error): MongoError;
     public static checkArray(array: Array<any>, type: string): boolean;
-    public static updateObject(object: MongoDocument, change: Object): Object;
+    public static updateObject(object: RawDocumentData, change: Object): Object;
 }
 
 export class MongoError extends Error {
@@ -149,14 +149,46 @@ export class Options extends null {
     public static createDefault(): MongoClientOptions;
 }
 
+export class MongoDocument {
+    public constructor(rawDocument: any, model: MongoModel);
+    public _document: RawDocumentData;
+    public $model: MongoModel;
+    public readonly _id: string;
+    public readonly __v: number;
+    public get id(): string;
+    public get vKey(): number;
+    public get _cFields(): Object;
+    public [propName: string]: any;
+    public delete(): Promise<void>;
+    public insertCopy(id: string): Promise<MongoDocument>;
+    private _parseFields(): void;
+    public toJSON(): JSONRawDocumentData;
+}
+
+export class DocumentBuilder {
+    public constructor(data?: DocumentBuilderData);
+    public id?: string;
+    public cFields?: Object;
+    public static from(document: MongoDocument): DocumentBuilder;
+    public setId(id: string): DocumentBuilder;
+    public addField(name: string, value: any): DocumentBuilder;
+    public addFields(data: Array<DocumentBuilderFieldData>|DocumentBuilderFieldData): DocumentBuilder;
+    toJSON(): BaseDocumentData;
+}
+
 //=============================================================================
 //                      [Interfaces and types below]
 //=============================================================================
+export interface DocumentBuilderFieldData {
+    name: string,
+    value: any
+}
+
 /**
  * @example
  * {field1: 'searchValue'}
  */
- export type MongoQuery = Object;
+export type MongoQuery = Object;
 
 /**
  * @example
@@ -166,6 +198,12 @@ export type MongoChange = Object;
 
 export type AnyObject = {};
 
+
+export interface BaseDocumentData {
+    _id: string,
+    [propName: string]: any;
+}
+
 /**
  * @example
  * {
@@ -174,11 +212,11 @@ export type AnyObject = {};
  *   someField: true
  * }
  */
-export interface MongoDocument {
-    _id: string,
+export interface RawDocumentData extends BaseDocumentData {
     __v: number,
-    [propName: string]: any;
 }
+
+export type JSONRawDocumentData = RawDocumentData;
 
 export type Awaitable<T> = T | PromiseLike<T>;
 
@@ -259,6 +297,11 @@ export interface ConnectionStringBuilderData {
     password?: string;
     srv?: boolean;
     authenticationSource?: string;
+}
+
+export interface DocumentBuilderData {
+    _id: string
+    cFields: Object;
 }
 
 export interface MongoClientOptions {
