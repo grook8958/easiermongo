@@ -36,7 +36,7 @@ class Utils extends null {
 	 */
 	static checkArray(array, type) {
 		for (const key of array) {
-			/** eslint-disable valid-typeof */
+			/* eslint-disable valid-typeof */
 			if (typeof key !== type) return false;
 		}
 		return true;

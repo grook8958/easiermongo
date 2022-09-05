@@ -123,7 +123,7 @@ class SchemaFieldBuilder {
 			type,
 			required,
 			default: this.default,
-			expires: ttl
+			expires: ttl,
 		};
 	}
 
@@ -147,9 +147,11 @@ class SchemaFieldBuilder {
 		const { name, required, type, ttl } = this;
 		if (typeof name !== 'string') throw new TypeError('INVALID_TYPE', 'name', 'string');
 		if (required && typeof required !== 'boolean') throw new TypeError('INVALID_TYPE', 'required', 'boolean');
-		if (this.default && typeof this.default !== 'boolean') throw new TypeError('REQUIRED_FIELD', 'default', 'SchemaFieldBuilderData');
+		if (this.default && typeof this.default !== 'boolean')
+			throw new TypeError('REQUIRED_FIELD', 'default', 'SchemaFieldBuilderData');
 		if (!type) throw new TypeError('REQUIRED_FIELD', 'type', 'SchemaFieldBuilderData');
 		if (ttl && typeof ttl !== 'number') throw new TypeError('INVALID_TYPE', 'ttl', 'number');
+		/* eslint-disable eqeqeq */
 		if (ttl && type != SchemaFieldTypes.DATE) throw new TypeError('INVALID_FIELD_TYPE', 'Date');
 	}
 }

@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { TypeError } = require('../errors');
 const Utils = require('../util/Utils');
 const MongoDocument = require('./MongoDocument');
-const DocumentBuilder = require('../builders/DocumentBuilder')
+const DocumentBuilder = require('../builders/DocumentBuilder');
 
 /**
  * The representation of a model
@@ -67,7 +67,7 @@ class MongoModel {
 	async getAll() {
 		const docs = await this._model.find();
 		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, new MongoDocument(doc, this)));
-		return docs.map(d => new MongoDocument(d, this));
+		return docs.map((d) => new MongoDocument(d, this));
 	}
 
 	/**
@@ -113,7 +113,7 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.find(query);
 		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, new MongoDocument(doc, this)));
-		return docs.map(d => new MongoDocument(d, this));
+		return docs.map((d) => new MongoDocument(d, this));
 	}
 
 	// Only for naming purpose
@@ -170,7 +170,7 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const docs = await this._model.updateMany(query, change, options).map(d => new MongoDocument(d, this));
+		const docs = await this._model.updateMany(query, change, options).map((d) => new MongoDocument(d, this));
 		if (docs.length > 0 && options.new === true) docs.forEach((doc) => this.cache.set(doc._id, doc));
 		return docs;
 	}
@@ -188,7 +188,6 @@ class MongoModel {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		const doc = await this._model.findByIdAndDelete(id);
 		this.cache.delete(doc._id);
-		
 	}
 
 	/**
@@ -202,7 +201,6 @@ class MongoModel {
 		if (doc) {
 			this.cache.delete(doc._id);
 		}
-		
 	}
 
 	/**
@@ -214,7 +212,6 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.deleteMany(query);
 		if (docs.length > 0) docs.forEach((doc) => this.cache.delete(doc._id));
-		
 	}
 
 	/**

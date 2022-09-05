@@ -65,8 +65,10 @@ class SchemaBuilder {
 	 */
 	_validateOptions(skipValidation = this.skipValidation) {
 		if (skipValidation) return;
-		if (!Array.isArray(this.fields) && !this.fields.some(field => field instanceof SchemaFieldBuilder)) throw new TypeError('INVALID_TYPE', 'fields', 'Array of SchemaFieldBuilders', true);
-		if (this.options && typeof this.options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+		if (!Array.isArray(this.fields) && !this.fields.some((field) => field instanceof SchemaFieldBuilder))
+			throw new TypeError('INVALID_TYPE', 'fields', 'Array of SchemaFieldBuilders', true);
+		if (this.options && typeof this.options !== 'object')
+			throw new TypeError('INVALID_TYPE', 'options', 'object', true);
 	}
 
 	/**

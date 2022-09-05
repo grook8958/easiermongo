@@ -26,8 +26,8 @@ module.exports = () => {
 			_id: 'some-id',
 			test: { field: "lol" }
 		});*/
-		await model.create(new DocumentBuilder().setId('some-id').addField('test', { yeet: "heeeheee"}))
-		const doc = await model.get('some-id')
+		await model.create(new DocumentBuilder().setId('some-id').addField('test', { yeet: 'heeeheee' }));
+		const doc = await model.get('some-id');
 		console.log(doc);
 		//await model.update('some-id', { test: { field: "e" }})
 		//console.log(await model.get('some-id'));
