@@ -8,13 +8,20 @@ exports.MongoModel = require('./database/MongoModel');
 exports.MongoSchema = require('./database/MongoSchema');
 exports.SchemaFileManager = require('./database/SchemaFileManager');
 exports.SchemaManager = require('./database/SchemaManager');
+exports.MongoDocument = require('./database/MongoDocument');
 // Builders
 exports.ConnectionStringBuilder = require('./builders/ConnectionStringBuilder');
 exports.SchemaBuilder = require('./builders/SchemaBuilder');
 exports.SchemaFieldBuilder = require('./builders/SchemaFieldBuilder');
+exports.DocumentBuilder = require('./builders/DocumentBuilder');
 // Util
 exports.Constants = require('./util/Constants');
 exports.Options = require('./util/Options');
 exports.Utils = require('./util/Utils');
 // Error
 exports.MongoError = require('./errors/MongoError');
+// Functions
+exports.increment = require('./database/functions/index').increment;
+exports.pull = require('./database/functions/index').pull;
+exports.push = require('./database/functions/index').push;
+
