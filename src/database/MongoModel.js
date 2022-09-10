@@ -5,6 +5,8 @@ const { TypeError } = require('../errors');
 const Utils = require('../util/Utils');
 const MongoDocument = require('./MongoDocument');
 const DocumentBuilder = require('../builders/DocumentBuilder');
+//TEMP
+const { Model } = require('mongoose')
 
 /**
  * The representation of a model
@@ -35,6 +37,10 @@ class MongoModel {
 		 * @type {Collection<string,MongoDocument>}
 		 */
 		this.cache = new Collection();
+
+		this.ttl = this._model.schema.get('expires');
+		
+		console.log(this.ttl)
 	}
 
 	/**

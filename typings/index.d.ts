@@ -128,6 +128,9 @@ export class SchemaFieldBuilder {
     public setType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldBuilder;
     public setRequired(required: boolean): SchemaFieldBuilder;
     public setDefault(value: any): SchemaFieldBuilder;
+    /**
+     * @deprecated Use `SchemaBuilder#setOptions({ expires: number })` instead.
+     */
     public setTTL(ttl: number): SchemaFieldBuilder;
     public toJSON(): any;
     private resolveFieldType(type: SchemaFieldType|SchemaFieldTypeResolvable): SchemaFieldType;
