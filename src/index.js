@@ -24,4 +24,3 @@ exports.MongoError = require('./errors/MongoError');
 exports.increment = require('./database/functions/index').increment;
 exports.pull = require('./database/functions/index').pull;
 exports.push = require('./database/functions/index').push;
-

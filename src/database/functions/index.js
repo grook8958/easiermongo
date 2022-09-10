@@ -11,8 +11,8 @@
  * }
  */
 exports.increment = (fieldName, amount) => {
-    return { $inc: { [fieldName]: amount }}
-}
+	return { $inc: { [fieldName]: amount } };
+};
 /**
  * Pull a specific `value` from an array in the database
  * * Only available in edit/update methods and if the field type is an `Array`
@@ -26,8 +26,8 @@ exports.increment = (fieldName, amount) => {
  * }
  */
 exports.pull = (fieldName, value) => {
-    return { $pull: { [fieldName]: value }}
-}
+	return { $pull: { [fieldName]: value } };
+};
 /**
  * Push a specific `value` in an array in the database
  * * Only available in edit/update methods and if the field type is an `Array`
@@ -41,5 +41,5 @@ exports.pull = (fieldName, value) => {
  * }
  */
 exports.push = (fieldName, value) => {
-    return { $push: { [fieldName]: value }}
-}
+	return { $push: { [fieldName]: value } };
+};
