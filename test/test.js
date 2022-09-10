@@ -1,4 +1,5 @@
 const DocumentBuilder = require('../src/builders/DocumentBuilder');
+const { pull, push, increment} = require('../src')
 
 module.exports = () => {
 	const path = require('path');
@@ -16,7 +17,9 @@ module.exports = () => {
 
 	const schema = new SchemaBuilder()
 		.addField((field) => field.setName('_id').setType('STRING').setRequired(true))
-		.addField((field) => field.setName('test').setType('MIXED'));
+		.addField((field) => field.setName('test').setType('NUMBER'))
+		.addField(field => field.setName('array').setType('ARRAY'))
+		//.addField((field) => field.setName('ttl').setType('DATE').setTTL(30))
 
 	client.on('ready', async () => {
 		console.log('connected');
@@ -26,11 +29,14 @@ module.exports = () => {
 			_id: 'some-id',
 			test: { field: "lol" }
 		});*/
-		await model.create(new DocumentBuilder().setId('some-id').addField('test', { yeet: 'heeeheee' }));
+		await model.create(new DocumentBuilder().setId('some-id').addField('test', 10).addField('array', ['value1', 'value3', 'ee'])/*.addField('ttl', Date.now())*/);
 		const doc = await model.get('some-id');
-		console.log(doc);
-		//await model.update('some-id', { test: { field: "e" }})
-		//console.log(await model.get('some-id'));
+		console.log(doc)
+		await model.edit('some-id', { 
+			//...pull('array', 'ee'), 
+			...push('array', 'value2')
+		})
+		console.log(await model.get('some-id'));
 	});
 
 	const string = new ConnectionStringBuilder()
