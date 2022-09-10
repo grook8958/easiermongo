@@ -327,3 +327,20 @@ export interface MongoClientEvents {
     file: [file: string]
 }
 
+export interface OperatorData<T> {
+    [propName: string]: T;
+};
+export type BaseOperatorObject<Op extends string, OpData extends object> = {
+    [propName in Op]: OpData;
+};
+export type PushOperatorObject = BaseOperatorObject<'$push',OperatorData<any>>;
+export type PullOperatorObject = BaseOperatorObject<'$pull',OperatorData<any>>;
+export type IncrementOperatorObject = BaseOperatorObject<'$inc',OperatorData<number>>;
+
+//=============================================================================
+//                      [Functions below]
+//=============================================================================
+export function increment(fieldName: string, amount: number): IncrementOperatorObject;
+export function pull(fieldName: string, value: any): PullOperatorObject;
+export function push(fieldName: string, value: any): PushOperatorObject;
+
