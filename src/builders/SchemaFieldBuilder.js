@@ -7,9 +7,6 @@ const { TypeError } = require('../errors');
  */
 class SchemaFieldBuilder {
 	/**
-	 * @typedef {typeof SchemaTypes} SchemaFieldType
-	 */
-	/**
 	 * @typedef {Object} SchemaFieldBuilderData
 	 * @property {string} name The name of this field
 	 * @property {SchemaFieldType} type The type of this field
