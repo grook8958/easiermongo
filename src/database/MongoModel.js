@@ -6,8 +6,6 @@ const Utils = require('../util/Utils');
 const MongoDocument = require('./MongoDocument');
 const DocumentBuilder = require('../builders/DocumentBuilder');
 const ms = require('ms');
-//TEMP
-const { Model } = require('mongoose');
 const DocumentExpiryManager = require('./DocumentExpiryManager');
 
 /**
@@ -61,7 +59,7 @@ class MongoModel {
 				ttl = this._model.schema.path(key).options.expires;
 			}
 		}
-		if (typeof ttl === 'string') return Math.trunc(ms(ttl) / 1000)
+		if (typeof ttl === 'string') return Math.trunc(ms(ttl) / 1000);
 		else return ttl;
 	}
 

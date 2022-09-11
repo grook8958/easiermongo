@@ -20,7 +20,7 @@ module.exports = () => {
 		.addField((field) => field.setName('test').setType('NUMBER'))
 		.addField((field) => field.setName('array').setType('ARRAY'))
 		//.setOptions({ expires: 30 })
-		.addField((field) => field.setName('ttl').setType('DATE').setTTL(30))
+		.addField((field) => field.setName('ttl').setType('DATE').setTTL(30));
 
 	client.on('ready', async () => {
 		console.log('connected');
@@ -30,7 +30,7 @@ module.exports = () => {
 			_id: 'some-id',
 			test: 1,
 			array: [],
-			ttl: Date.now()
+			ttl: Date.now(),
 		});
 		/*await model.create(
 			new DocumentBuilder()
@@ -42,11 +42,11 @@ module.exports = () => {
 		//console.log(doc)
 
 		model.onExpire((id, document) => {
-			console.log(id, document)
-		})
+			console.log(id, document);
+		});
 		//console.log(Object.getOwnPropertyDescriptors(doc));
 		//await model.edit('some-id', {
-			//...pull('array', 'ee'),
+		//...pull('array', 'ee'),
 		//	...push('array', 'value2'),
 		//});
 		//console.log(await model.get('some-id'));
