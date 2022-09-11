@@ -9,6 +9,7 @@ exports.MongoSchema = require('./database/MongoSchema');
 exports.SchemaFileManager = require('./database/SchemaFileManager');
 exports.SchemaManager = require('./database/SchemaManager');
 exports.MongoDocument = require('./database/MongoDocument');
+exports.DocumentExpiryManager = require('./database/DocumentExpiryManager');
 // Builders
 exports.ConnectionStringBuilder = require('./builders/ConnectionStringBuilder');
 exports.SchemaBuilder = require('./builders/SchemaBuilder');
