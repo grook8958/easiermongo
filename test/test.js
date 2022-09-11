@@ -18,30 +18,38 @@ module.exports = () => {
 	const schema = new SchemaBuilder()
 		.addField((field) => field.setName('_id').setType('STRING').setRequired(true))
 		.addField((field) => field.setName('test').setType('NUMBER'))
-		.addField((field) => field.setName('array').setType('ARRAY'));
-	//.addField((field) => field.setName('ttl').setType('DATE').setTTL(30))
+		.addField((field) => field.setName('array').setType('ARRAY'))
+		//.setOptions({ expires: 30 })
+		.addField((field) => field.setName('ttl').setType('DATE').setTTL(30))
 
 	client.on('ready', async () => {
 		console.log('connected');
 		client.database.schemas.addSchema('tests', schema);
 		const model = client.database.schemas.collection.get('tests').model;
-		/*await model.create({
+		await model.create({
 			_id: 'some-id',
-			test: { field: "lol" }
-		});*/
-		await model.create(
+			test: 1,
+			array: [],
+			ttl: Date.now()
+		});
+		/*await model.create(
 			new DocumentBuilder()
 				.setId('some-id')
 				.addField('test', 10)
-				.addField('array', ['value1', 'value3', 'ee']) /*.addField('ttl', Date.now())*/,
-		);
-		const doc = await model.get('some-id');
-		console.log(doc);
-		await model.edit('some-id', {
+				.addField('array', ['value1', 'value3', 'ee']) .addField('ttl', Date.now()),
+		);*/
+		//const doc = await model.get('some-id');
+		//console.log(doc)
+
+		model.onExpire((id, document) => {
+			console.log(id, document)
+		})
+		//console.log(Object.getOwnPropertyDescriptors(doc));
+		//await model.edit('some-id', {
 			//...pull('array', 'ee'),
-			...push('array', 'value2'),
-		});
-		console.log(await model.get('some-id'));
+		//	...push('array', 'value2'),
+		//});
+		//console.log(await model.get('some-id'));
 	});
 
 	const string = new ConnectionStringBuilder()
