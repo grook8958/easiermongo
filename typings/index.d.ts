@@ -84,6 +84,7 @@ export class MongoModel {
     public makeCache: boolean;
     public cache: Collection<string,MongoDocument>;
     public ttl: number|null;
+    public _expiryManager: DocumentExpiryManager;
     private resolveTTL(): number;
     public onExpire(callback: (id: string, document: MongoDocument) => {}): void;
     public create(document: DocumentBuilder|BaseDocumentData): Promise<MongoDocument>;
