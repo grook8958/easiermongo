@@ -83,6 +83,9 @@ export class MongoModel {
     public _model: Model<any>;
     public makeCache: boolean;
     public cache: Collection<string,MongoDocument>;
+    public ttl: number|null;
+    private resolveTTL(): number;
+    public onExpire(callback: (id: string, document: MongoDocument) => {}): void;
     public create(document: DocumentBuilder|BaseDocumentData): Promise<MongoDocument>;
     public getAll(): Promise<any>;
     public get(id: string): Promise<MongoDocument>;
@@ -176,9 +179,34 @@ export class DocumentBuilder {
     toJSON(): BaseDocumentData;
 }
 
+export class DocumentExpiryManager extends EventEmitter {
+    public constructor(model: MongoModel);
+    public model: MongoModel;
+    public clock: NodeJS.Timer;
+    public willExpire: Array<String|undefined>;
+    public checkExpire(): void;
+    public end(): void;
+    public register(): boolean;
+    public remove(): boolean;
+    public on<K extends keyof DocumentExpiryManagerEvents>(event: K, listener: (...args: DocumentExpiryManagerEvents[K]) => Awaitable<void>): this;
+    public on<S extends string | symbol>(
+      event: Exclude<S, keyof DocumentExpiryManagerEvents>,
+      listener: (...args: any[]) => Awaitable<void>,
+    ): this;
+    public once<K extends keyof DocumentExpiryManagerEvents>(event: K, listener: (...args: DocumentExpiryManagerEvents[K]) => Awaitable<void>): this;
+    public once<S extends string | symbol>(
+      event: Exclude<S, keyof DocumentExpiryManagerEvents>,
+      listener: (...args: any[]) => Awaitable<void>,
+    ): this;
+}
+
 //=============================================================================
 //                      [Interfaces and types below]
 //=============================================================================
+export interface DocumentExpiryManagerEvents {
+    expire: [id: string, document: MongoDocument];
+}
+
 export interface DocumentBuilderFieldData {
     name: string,
     value: any

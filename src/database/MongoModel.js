@@ -5,8 +5,10 @@ const { TypeError } = require('../errors');
 const Utils = require('../util/Utils');
 const MongoDocument = require('./MongoDocument');
 const DocumentBuilder = require('../builders/DocumentBuilder');
+const ms = require('ms');
 //TEMP
-const { Model } = require('mongoose')
+const { Model } = require('mongoose');
+const DocumentExpiryManager = require('./DocumentExpiryManager');
 
 /**
  * The representation of a model
@@ -38,9 +40,40 @@ class MongoModel {
 		 */
 		this.cache = new Collection();
 
-		this.ttl = this._model.schema.get('expires');
-		
-		console.log(this.ttl)
+		/**
+		 * The TTL (Time-To-Live) a document in this collection has.
+		 * @type {number|null}
+		 */
+		this.ttl = this.resolveTTL() ?? null;
+
+		this._expiryManager = new DocumentExpiryManager(this);
+	}
+
+	/**
+	 * Resolves the TTL to a number
+	 * @private
+	 */
+	resolveTTL() {
+		const paths = this._model.schema.paths;
+		let ttl;
+		for (const key in paths) {
+			if (this._model.schema.path(key).instance === 'Date') {
+				ttl = this._model.schema.path(key).options.expires;
+			}
+		}
+		if (typeof ttl === 'string') return Math.trunc(ms(ttl) / 1000)
+		else return ttl;
+	}
+
+	/**
+	 * Runs the callback each time a document expires.
+	 * * Documents created BEFORE the code was ran are not taken into notice
+	 * @param {(id: string, document: MongoDocument) => {}} callback
+	 */
+	onExpire(callback) {
+		if (typeof callback === 'function') {
+			this._expiryManager.on('expire', callback);
+		}
 	}
 
 	/**
@@ -62,6 +95,7 @@ class MongoModel {
 		const _doc = new this._model(document);
 		const doc = new MongoDocument(_doc, this);
 		if (this.makeCache && doc) this.cache.set(doc._id, doc);
+		if (this.ttl) this._expiryManager.register(doc._id);
 		await _doc.save();
 		return doc;
 	}
@@ -193,6 +227,7 @@ class MongoModel {
 	async delete(id) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		const doc = await this._model.findByIdAndDelete(id);
+		if (this.ttl) this._expiryManager.remove(doc._id);
 		this.cache.delete(doc._id);
 	}
 
@@ -205,6 +240,7 @@ class MongoModel {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const doc = await this._model.findOneAndDelete(query);
 		if (doc) {
+			if (this.ttl) this._expiryManager.remove(doc._id);
 			this.cache.delete(doc._id);
 		}
 	}
@@ -217,6 +253,7 @@ class MongoModel {
 	async deleteMany(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.deleteMany(query);
+		if (docs.length > 0) docs.forEach((doc) => this._expiryManager.remove(doc._id));
 		if (docs.length > 0) docs.forEach((doc) => this.cache.delete(doc._id));
 	}
 
