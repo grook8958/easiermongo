@@ -38,7 +38,7 @@ class MongoDocument {
 		 * @type {number}
 		 * @readonly
 		 */
-		this.__v = this._document.__v;
+		this.__v = this._document['__v'];
 
 		this._parseFields();
 	}
