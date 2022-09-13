@@ -44,6 +44,10 @@ class MongoModel {
 		 */
 		this.ttl = this.resolveTTL() ?? null;
 
+		/**
+		 * The expiry manager of this model
+		 * @type {DocumentExpiryManager}
+		 */
 		this._expiryManager = new DocumentExpiryManager(this);
 	}
 
@@ -161,7 +165,7 @@ class MongoModel {
 
 	/**
 	 * Edits a document using it's id.
-	 * @param {string} id The document `_id`
+	 * @param {string} id The document's `_id`
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.

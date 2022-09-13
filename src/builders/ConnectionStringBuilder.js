@@ -13,7 +13,7 @@ class ConnectionStringBuilder {
 	 * @property {string} password The connection password
 	 * @property {boolean} srv Wether it should use `mongodb+srv://`.
 	 * * Set to `false` by default
-	 * @property {string} authenticationSource The source of the authentication
+	 * @property {string} authSource The source of the authentication
 	 */
 	/**
 	 * The object representation of a MongoDB connection string.
@@ -61,7 +61,7 @@ class ConnectionStringBuilder {
 		 * Authentication source
 		 * @type {string}
 		 */
-		this.authenticationSource = data.authenticationSource ?? null;
+		this.authSource = data.authSource ?? null;
 	}
 
 	/**
@@ -129,8 +129,8 @@ class ConnectionStringBuilder {
 	 * @param {string} source The source of the authentication
 	 * @returns {ConnectionStringBuilder}
 	 */
-	setAuthenticationSource(source) {
-		this.authenticationSource = source;
+	setAuthSource(source) {
+		this.authSource = source;
 		return this;
 	}
 
@@ -142,7 +142,7 @@ class ConnectionStringBuilder {
 		return `mongodb${this.srv ? '+srv' : ''}://${encodeURIComponent(this.username)}:${encodeURIComponent(
 			this.password,
 		)}@${this.host}:${this.port}/${encodeURIComponent(this.dbName)}${
-			this.authenticationSource ? '?authSource=' + encodeURIComponent(this.authenticationSource) : ''
+			this.authSource ? '?authSource=' + encodeURIComponent(this.authSource) : ''
 		}`;
 	}
 
@@ -151,7 +151,7 @@ class ConnectionStringBuilder {
 	 * @returns {Object}
 	 */
 	toJSON() {
-		const { authenticationSource, dbName, host, password, port, srv, username } = this;
+		const { authSource: authenticationSource, dbName, host, password, port, srv, username } = this;
 		return {
 			host,
 			port,

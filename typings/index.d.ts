@@ -41,14 +41,14 @@ export class ConnectionStringBuilder {
     public username: string | null;
     public password: string | null;
     public srv: boolean | null;
-    public authenticationSource: string | null;
+    public authSource: string | null;
     public setHost(host: string): ConnectionStringBuilder;
     public setPort(port: number): ConnectionStringBuilder;
     public setDbName(dbName: string): ConnectionStringBuilder;
     public setUsername(username: string): ConnectionStringBuilder;
     public setPassword(password: string): ConnectionStringBuilder;
     public useSRV(useSRV: boolean): ConnectionStringBuilder;
-    public setAuthenticationSource(source: string): ConnectionStringBuilder;
+    public setAuthSource(source: string): ConnectionStringBuilder;
     public toString(): string;
     public toJSON(): Object;
 }
@@ -325,7 +325,7 @@ export interface ConnectionStringBuilderData {
     username?: string;
     password?: string;
     srv?: boolean;
-    authenticationSource?: string;
+    authSource?: string;
 }
 
 export interface DocumentBuilderData {
