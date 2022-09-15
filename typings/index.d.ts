@@ -162,7 +162,7 @@ export class MongoDocument {
     public get id(): string;
     public get vKey(): number;
     public get _cFields(): Object;
-    public [propName: string]: any;
+    [propName: string]: any;
     public delete(): Promise<void>;
     public insertCopy(id: string): Promise<MongoDocument>;
     private _parseFields(): void;
@@ -358,7 +358,7 @@ export interface MongoClientEvents {
 
 export interface OperatorData<T> {
     [propName: string]: T;
-};
+}
 export type BaseOperatorObject<Op extends string, OpData extends object> = {
     [propName in Op]: OpData;
 };
