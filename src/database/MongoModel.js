@@ -70,7 +70,7 @@ class MongoModel {
 	/**
 	 * Runs the callback each time a document expires.
 	 * * Documents created BEFORE the code was ran are not taken into notice
-	 * @param {(id: string, document: MongoDocument) => {}} callback
+	 * @param {(id: string, document: MongoDocument) => {}} callback The function to run when a document expires
 	 */
 	onExpire(callback) {
 		if (typeof callback === 'function') {
@@ -204,7 +204,7 @@ class MongoModel {
 	/**
 	 * Finds documents corresponding to the query and edits them.
 	 * @param {MongoQuery} query The query to search for
-	 * @param {MongoChange} change The changes it should apply to the documents
+	 * @param {MongoChange} change The changes that should apply to all the documents matching the query
 	 * @param {ModelEditOptions} options The options of this edit
 	 * @returns {Promise<MongoDocument[]>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
 	 */
