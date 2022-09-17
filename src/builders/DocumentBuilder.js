@@ -9,7 +9,7 @@ class DocumentBuilder {
 
 	/**
 	 * Builder for Documents
-	 * @param {DocumentBuilderData} data
+	 * @param {DocumentBuilderData} data The raw document builder data to use
 	 */
 	constructor(data = {}) {
 		/**
@@ -29,7 +29,7 @@ class DocumentBuilder {
 
 	/**
 	 * Converts a MongoDocument into a DocumentBuilder
-	 * @param {MongoDocument} document
+	 * @param {MongoDocument} document The document to convert
 	 * @returns {DocumentBuilder}
 	 */
 	static from(document) {
@@ -57,9 +57,9 @@ class DocumentBuilder {
 	 */
 
 	/**
-	 * Set's a field
+	 * Adds a field to the document
 	 * @param {string} name The name of the field
-	 * * Make sure it is the same as in your `MongoSchema`
+	 * * Make sure `name` is the same as in your schema and that the type of `value` is the same as specified in your schema.
 	 * @param {any} value The value of the field
 	 * @returns {DocumentBuilder}
 	 */
@@ -68,8 +68,8 @@ class DocumentBuilder {
 	}
 
 	/**
-	 * Add one or more fields
-	 * @param {Array<DocumentBuilderFieldData>|DocumentBuilderFieldData} fields The fields to add.
+	 * Adds one or more fields to the document.
+	 * @param {Array<DocumentBuilderFieldData>|DocumentBuilderFieldData} fields The field data to add.
 	 * @returns {DocumentBuilder}
 	 */
 	addFields(...data) {
