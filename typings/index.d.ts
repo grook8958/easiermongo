@@ -186,7 +186,7 @@ export class DocumentExpiryManager extends EventEmitter {
     public clock: NodeJS.Timer;
     public willExpire: Array<String|undefined>;
     public checkExpire(): void;
-    public end(): void;
+    public destroy(): void;
     public register(): boolean;
     public remove(): boolean;
     public on<K extends keyof DocumentExpiryManagerEvents>(event: K, listener: (...args: DocumentExpiryManagerEvents[K]) => Awaitable<void>): this;

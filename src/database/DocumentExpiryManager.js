@@ -8,7 +8,7 @@ const { EventEmitter } = require('node:events');
 class DocumentExpiryManager extends EventEmitter {
 	/**
 	 * The DocumentExpiryManager
-	 * @param {MongoModel} model
+	 * @param {MongoModel} model The parent of this manager
 	 */
 	constructor(model) {
 		super();
@@ -20,7 +20,7 @@ class DocumentExpiryManager extends EventEmitter {
 		this.model = model;
 
 		/**
-		 * The clock
+		 * The interval clock
 		 * @private
 		 */
 		this.clock = setInterval(() => this.checkExpire(), this.model.ttl * 1000);
@@ -32,6 +32,10 @@ class DocumentExpiryManager extends EventEmitter {
 		this.willExpire = [];
 	}
 
+	/**
+	 * Check if a document is about to expire
+	 * @returns {void}
+	 */
 	checkExpire() {
 		if (!this.willExpire || this.willExpire.length < 0) return;
 		for (const expired of this.willExpire) {
@@ -42,16 +46,30 @@ class DocumentExpiryManager extends EventEmitter {
 		}
 	}
 
-	end() {
+	/**
+	 * Destroy this manager
+	 * @returns {void}
+	 */
+	destroy() {
 		clearInterval(this.clock);
 	}
 
+	/**
+	 * Register a new document to the manager
+	 * @param {string} id The unique Identifier of the document.
+	 * @returns {boolean}
+	 */
 	register(id) {
 		if (this.willExpire.includes(id)) return false;
 		this.willExpire.push(id);
 		return true;
 	}
 
+	/**
+	 * Remove a document from the manager
+	 * @param {string} id The unique Identifier of the document.
+	 * @returns {boolean}
+	 */
 	remove(id) {
 		if (!this.willExpire.includes(id)) return false;
 		this.willExpire.splice(this.willExpire.indexOf(id), 1);
