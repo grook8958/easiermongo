@@ -89,16 +89,18 @@ export class MongoModel {
     public onExpire(callback: (id: string, document: MongoDocument) => {}): void;
     public create(document: DocumentBuilder|BaseDocumentData): Promise<MongoDocument>;
     public getAll(): Promise<any>;
-    public get(id: string): Promise<MongoDocument>;
-    public find(query: MongoQuery): Promise<MongoDocument>;
-    public findMany(query: MongoQuery): Promise<MongoDocument[]>;
-    public edit(id: string, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
-    public findAndEdit(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
-    public editMany(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
+    public get(id: string): Promise<MongoDocument|null>;
+    public find(query: MongoQuery): Promise<MongoDocument|null>;
+    public findMany(query: MongoQuery): Promise<Array<MongoDocument|null>>;
+    public edit(id: string, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument|null>;
+    public findAndEdit(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument|null>;
+    public editMany(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<Array<MongoDocument|null>>;
     public delete(id: string): Promise<void>;
     public findAndDelete(query: MongoQuery): Promise<void>;
     public deleteMany(query: MongoQuery): Promise<void>;
-    public update(id: string, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument>;
+    public update(id: string, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument|null>;
+    public findAndUpdate(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<MongoDocument|null>
+    public updateMany(query: MongoQuery, change: MongoChange, options?: ModelEditOptions): Promise<Array<MongoDocument|null>>;
 }
 
 export class SchemaFileManager {
@@ -164,7 +166,7 @@ export class MongoDocument {
     public get _cFields(): Object;
     [propName: string]: any;
     public delete(): Promise<void>;
-    public insertCopy(id: string): Promise<MongoDocument>;
+    public insertCopy(id: string): Promise<MongoDocument|null>;
     private _parseFields(): void;
     public toJSON(): JSONRawDocumentData;
 }

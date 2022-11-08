@@ -104,18 +104,19 @@ class MongoModel {
 
 	/**
 	 * Get all the documents in this collection.
-	 * @returns {Promise<MongoDocument>} The document(s) found in the collection
+	 * @returns {Promise<MongoDocument|null>} The document(s) found in the collection
 	 */
 	async getAll() {
 		const docs = await this._model.find();
 		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, new MongoDocument(doc, this)));
+		if (docs.length === 0 || !docs) return null;
 		return docs.map((d) => new MongoDocument(d, this));
 	}
 
 	/**
 	 * Get a document by it's id
 	 * @param {string} id The document `_id`
-	 * @returns {Promise<MongoDocument>} The document matching the id
+	 * @returns {Promise<MongoDocument|null>} The document matching the id
 	 * @example
 	 * const document = await model.get('someId')
 	 * 	.catch(err => console.error(err))
@@ -123,7 +124,9 @@ class MongoModel {
 	 */
 	async get(id) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
-		const doc = new MongoDocument(await this._model.findById(id), this);
+		const rawDoc = await this._model.findById(id);
+		if (!rawDoc) return null;
+		const doc = new MongoDocument(rawDoc, this);
 		if (doc && this.makeCache) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -132,7 +135,7 @@ class MongoModel {
 	 * Searches for one document matching the query
 	 * * If you want to find a document with the `_id`, use `get` method instead.
 	 * @param {MongoQuery} query The query to search for
-	 * @returns {Promise<MongoDocument>} The document matching the query
+	 * @returns {Promise<MongoDocument|null>} The document matching the query
 	 * @example
 	 * const document = await model.find({ name: 'John', lastName: 'Doe' })
 	 * 	.catch(err => console.error(err))
@@ -140,7 +143,9 @@ class MongoModel {
 	 */
 	async find(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
-		const doc = new MongoDocument(await this._model.findOne(query), this);
+		const rawDoc = await this._model.findOne(query);
+		if (!rawDoc) return null;
+		const doc = new MongoDocument(rawDoc, this);
 		if (doc && this.makeCache) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -149,11 +154,12 @@ class MongoModel {
 	 * Searches for all document matching the query
 	 * * If you want to find a document with the `_id`, use `get` method instead.
 	 * @param {MongoQuery} query The query to search for
-	 * @returns {Promise<MongoDocument[]>} The document(s) matching the query
+	 * @returns {Promise<Array<MongoDocument|null>>} The document(s) matching the query
 	 */
 	async findMany(query) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		const docs = await this._model.find(query);
+		if (docs.length === 0 || !docs) return null;
 		if (docs.length > 0 && this.makeCache) docs.forEach((doc) => this.cache.set(doc._id, new MongoDocument(doc, this)));
 		return docs.map((d) => new MongoDocument(d, this));
 	}
@@ -168,7 +174,7 @@ class MongoModel {
 	 * @param {string} id The document's `_id`
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument|null>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 * @example
 	 * //Change the age to 48.
 	 * //Set option `new` to true to return the edited document
@@ -180,7 +186,9 @@ class MongoModel {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const doc = new MongoDocument(await this._model.findByIdAndUpdate(id, change, options), this);
+		const rawDoc = await this._model.findByIdAndUpdate(id, change, options)
+		if (!rawDoc) return null;
+		const doc = new MongoDocument(rawDoc, this);
 		if (doc && options.new === true) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -190,13 +198,15 @@ class MongoModel {
 	 * @param {MongoQuery} query The query to search for
 	 * @param {MongoChange} change The changes it should apply to the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument|null>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
 	async findAndEdit(query, change, options = {}) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const doc = new MongoDocument(await this._model.findOneAndUpdate(query, change, options), this);
+		const rawDoc = await this._model.findOneAndUpdate(query, change, options);
+		if (!rawDoc) return null; 
+		const doc = new MongoDocument(rawDoc, this);
 		if (doc && options.new === true) this.cache.set(doc._id, doc);
 		return doc;
 	}
@@ -206,15 +216,16 @@ class MongoModel {
 	 * @param {MongoQuery} query The query to search for
 	 * @param {MongoChange} change The changes that should apply to all the documents matching the query
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<MongoDocument[]>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
+	 * @returns {Promise<Array<MongoDocument|null>>} The old document(s) or if `options.new` is set to `true` then it will return the newly edited document(s).
 	 */
 	async editMany(query, change, options = {}) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const docs = await this._model.updateMany(query, change, options).map((d) => new MongoDocument(d, this));
+		const docs = await this._model.updateMany(query, change, options);
 		if (docs.length > 0 && options.new === true) docs.forEach((doc) => this.cache.set(doc._id, doc));
-		return docs;
+		if (docs.length === 0 || !docs) return null;
+		return docs.map((d) => new MongoDocument(d, this));;
 	}
 
 	/**
@@ -265,7 +276,7 @@ class MongoModel {
 	 * @param {string} id The id of the document to update
 	 * @param {MongoChange} change What to change in the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument|null>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
 	async update(id, change, options = {}) {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
@@ -282,7 +293,7 @@ class MongoModel {
 	 * @param {MongoQuery} query The to search for
 	 * @param {MongoChange} change What to change in the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<MongoDocument>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
+	 * @returns {Promise<MongoDocument|null>} The old document or if `options.new` is set to `true` then it will return the newly edited document.
 	 */
 	async findAndUpdate(query, change, options = {}) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
@@ -299,7 +310,7 @@ class MongoModel {
 	 * @param {MongoQuery} query The to search for
 	 * @param {MongoChange} change What to change in the document
 	 * @param {ModelEditOptions} options The options of this edit
-	 * @returns {Promise<MongoDocument[]>} The old documents or if `options.new` is set to `true` then it will return the newly edited documents.
+	 * @returns {Promise<Array<MongoDocument|null>>} The old documents or if `options.new` is set to `true` then it will return the newly edited documents.
 	 */
 	async updateMany(query, change, options = {}) {
 		if (typeof query !== 'object') throw new TypeError('INVALID_TYPE', 'query', 'object');
