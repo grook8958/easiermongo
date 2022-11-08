@@ -1,5 +1,6 @@
 const DocumentBuilder = require('../src/builders/DocumentBuilder');
 const { pull, push, increment } = require('../src');
+const mongoose = require('mongoose');
 
 module.exports = () => {
 	const path = require('path');
