@@ -186,7 +186,7 @@ class MongoModel {
 		if (typeof id !== 'string') throw new TypeError('INVALID_TYPE', 'id', 'string');
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
-		const rawDoc = await this._model.findByIdAndUpdate(id, change, options)
+		const rawDoc = await this._model.findByIdAndUpdate(id, change, options);
 		if (!rawDoc) return null;
 		const doc = new MongoDocument(rawDoc, this);
 		if (doc && options.new === true) this.cache.set(doc._id, doc);
@@ -205,7 +205,7 @@ class MongoModel {
 		if (typeof change !== 'object') throw new TypeError('INVALID_TYPE', 'change', 'object');
 		if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object');
 		const rawDoc = await this._model.findOneAndUpdate(query, change, options);
-		if (!rawDoc) return null; 
+		if (!rawDoc) return null;
 		const doc = new MongoDocument(rawDoc, this);
 		if (doc && options.new === true) this.cache.set(doc._id, doc);
 		return doc;
@@ -225,7 +225,7 @@ class MongoModel {
 		const docs = await this._model.updateMany(query, change, options);
 		if (docs.length > 0 && options.new === true) docs.forEach((doc) => this.cache.set(doc._id, doc));
 		if (docs.length === 0 || !docs) return null;
-		return docs.map((d) => new MongoDocument(d, this));;
+		return docs.map((d) => new MongoDocument(d, this));
 	}
 
 	/**
